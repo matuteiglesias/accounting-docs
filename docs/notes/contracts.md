@@ -1,7 +1,7 @@
 ---
-id: notes/contracts
 title: "Contracts"
 sidebar_label: "Contracts"
+
 ---
 
 
@@ -29,7 +29,7 @@ Required files: ledger_canonical.csv; optional loan register (currently None in 
 Outputs: ledger_canonical.csv (copy), per_flow_time_long.freq=<freq>.csv, per_party_time_long.freq=<freq>.csv,
          loans_time.freq=M.csv, daily_cash_position.csv, partitions.json, manifest.json, anomalies.csv (if any).
 Artifacts: all CSVs written atomically; JSON files updated atomically.
-Manifest fields: generated_at, aggregates{file->{path,rows,sha256}}, partitions{freq,last_materialized_at,last_period_end,outputs}, anomalies{...}|None.
+Manifest fields: generated_at, aggregates{file to {path,rows,sha256}}, partitions{freq,last_materialized_at,last_period_end,outputs}, anomalies{...}|None.
 Invariants: aggregates entries include sha256; partitions.json updated; manifest written even if some substeps fail (best-effort).
 Failure modes: missing ledger file; per_flow/per_party exceptions; schema drift in ledger breaks aggregators; partial outputs if crash mid-run.
 Observability: logs for each write; logs exceptions per substep; prints/check logs exist (should be tamed later).

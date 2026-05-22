@@ -1,7 +1,7 @@
 ---
-id: notes/narrative
 title: "Narrative"
 sidebar_label: "Narrative"
+
 ---
 
 Perfecto: tu “negocio” no es solo contabilidad de gastos, es un sistema de renta inmobiliaria familiar con gobernanza frágil, préstamos internos, y riesgo de desvío de caja. Eso cambia por completo qué historias valen la pena y qué figuras son “estándar”.
@@ -218,7 +218,7 @@ Pregunta: cuánta caja del negocio termina en hogar o viceversa, y por qué
 
 Vistas:
 
-* Flujo neto entre boxes (Household <-> Property Management) por mes
+* Flujo neto entre boxes (Household to/from Property Management) por mes
 * Pie o barras: “Contribuciones” vs “Transferencias” vs “Préstamos” vs “Repagos”
 * Ratio: aportes extraordinarios / ingresos de rentas
 
@@ -330,7 +330,7 @@ Con eso, las historias salen sin lógica ad hoc.
 Luego, “payer/receiver” queda para análisis de contrapartes, no para signo.
 
 2. Clasificación inequívoca de movimientos entre cajas
-   Cualquier cosa HH <-> PM debe caer en una de estas 4 clases:
+   Cualquier cosa HH to / from  PM debe caer en una de estas 4 clases:
 
 * transferencia interna
 * contribución de capital

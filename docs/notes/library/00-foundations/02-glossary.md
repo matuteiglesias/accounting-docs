@@ -1,8 +1,8 @@
 ---
-id: notes/library/00-foundations/02-glossary
 title: "02 glossary"
 sidebar_label: "02 glossary"
 sidebar_position: 2
+
 ---
 
 # 02 glossary

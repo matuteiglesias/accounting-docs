@@ -1,8 +1,8 @@
 ---
-id: notes/library/10-operations/11-environment-bootstrap
 title: "11 environment bootstrap"
 sidebar_label: "11 environment bootstrap"
 sidebar_position: 11
+
 ---
 
 # 11 environment bootstrap

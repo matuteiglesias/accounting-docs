@@ -1,8 +1,8 @@
 ---
-id: notes/library/10-operations/10-operator-start-here
 title: "10 operator start here"
 sidebar_label: "10 operator start here"
 sidebar_position: 10
+
 ---
 
 # 10 operator start here

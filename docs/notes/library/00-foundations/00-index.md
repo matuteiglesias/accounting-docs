@@ -1,8 +1,8 @@
 ---
-id: notes/library/00-foundations/00-index
 title: "00 index"
 sidebar_label: "00 index"
 sidebar_position: 0
+
 ---
 
 # 00 index

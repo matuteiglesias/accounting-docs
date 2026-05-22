@@ -1,8 +1,8 @@
 ---
-id: notes/library/00-foundations/01-doc-map-by-role
 title: "01 doc map by role"
 sidebar_label: "01 doc map by role"
 sidebar_position: 1
+
 ---
 
 # 01 doc map by role

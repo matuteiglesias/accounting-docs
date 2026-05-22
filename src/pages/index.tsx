@@ -26,21 +26,21 @@ const quickLinks: QuickLink[] = [
     title: 'Start Operating in 15 Minutes',
     description:
       'Bootstrap the environment, run smoke checks, and classify failures quickly.',
-    to: '/notes/library/10-operations/10-operator-start-here',
+    to: '/notes/library/operations/operator-start-here',
     cta: 'Open Operator Start',
   },
   {
     title: 'Set Up Periodic Automation',
     description:
       'Use canonical scheduling wiring for systemd/cron and publish latest snapshots.',
-    to: '/notes/library/20-automation/20-automation-start-here',
+    to: '/notes/library/automation/automation-start-here',
     cta: 'Open Automation Guide',
   },
   {
     title: 'Consume Reports Safely',
     description:
       'Find human reports, metric views, and debt snapshots without touching internals.',
-    to: '/notes/library/30-consumers/30-consumer-start-here',
+    to: '/notes/library/consumers/consumer-start-here',
     cta: 'Open Consumer Guide',
   },
 ];
@@ -49,34 +49,34 @@ const sectionCards: SectionCard[] = [
   {
     title: 'Foundations',
     desc: 'Vocabulary, role map, and pipeline abstractions for shared context.',
-    to: '/notes/library/00-foundations/00-index',
+    to: '/notes/library/foundations/index',
   },
   {
     title: 'Operations',
     desc: 'Runbooks, stage checklists, smoke-vs-run modes, and incident-first triage.',
-    to: '/notes/library/10-operations/10-operator-start-here',
+    to: '/notes/library/operations/operator-start-here',
     badge: 'High Impact',
   },
   {
     title: 'Automation',
     desc: 'Scheduler wiring, env contracts, cadence/SLO guidance, and recovery playbooks.',
-    to: '/notes/library/20-automation/20-automation-start-here',
+    to: '/notes/library/automation/automation-start-here',
   },
   {
     title: 'Consumers',
     desc: 'Where to find latest outputs and how to answer common business questions.',
-    to: '/notes/library/30-consumers/30-consumer-start-here',
+    to: '/notes/library/consumers/consumer-start-here',
   },
   {
     title: 'Development',
     desc: 'Refactor Definition of Done, contract-change protocol, and release gates.',
-    to: '/notes/library/40-development/40-dev-start-here',
+    to: '/notes/library/development/dev-start-here',
     badge: 'Quality Gate',
   },
   {
     title: 'Governance',
     desc: 'Ownership, freshness checks, and evidence-map templates to prevent drift.',
-    to: '/notes/library/90-governance/90-doc-ownership-and-review',
+    to: '/notes/library/governance/doc-ownership-and-review',
   },
 ];
 
@@ -93,10 +93,10 @@ function HomepageHeader() {
         <p className="hero__subtitle">{siteConfig.tagline}</p>
 
         <div className={styles.heroButtons}>
-          <Link className="button button--secondary button--lg" to="/notes/library/00-foundations/00-index">
+          <Link className="button button--secondary button--lg" to="/notes/library/foundations/index">
             Start Here
           </Link>
-          <Link className="button button--outline button--lg" to="/notes/library/10-operations/15-incidents-first-15-minutes">
+          <Link className="button button--outline button--lg" to="/notes/library/operations/incidents-first-15-minutes">
             Incident First 15 Minutes
           </Link>
         </div>

@@ -1,8 +1,8 @@
 ---
-id: notes/library/00-foundations/03-pipeline-abstractions
 title: "03 pipeline abstractions"
 sidebar_label: "03 pipeline abstractions"
 sidebar_position: 3
+
 ---
 
 # 03 pipeline abstractions

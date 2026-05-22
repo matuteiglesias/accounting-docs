@@ -37,7 +37,7 @@ const config: Config = {
           editUrl:
             'https://github.com/matuteiglesias/accounting-docs/tree/main/docs/notes/',
           showLastUpdateAuthor: false,
-          showLastUpdateTime: true,
+          showLastUpdateTime: false,
         },
         blog: false,
         theme: {

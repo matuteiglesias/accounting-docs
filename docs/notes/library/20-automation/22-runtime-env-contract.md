@@ -1,8 +1,8 @@
 ---
-id: notes/library/20-automation/22-runtime-env-contract
 title: "22 runtime env contract"
 sidebar_label: "22 runtime env contract"
 sidebar_position: 22
+
 ---
 
 # 22 runtime env contract

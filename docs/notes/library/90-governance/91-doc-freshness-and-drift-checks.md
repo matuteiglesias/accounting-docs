@@ -1,8 +1,8 @@
 ---
-id: notes/library/90-governance/91-doc-freshness-and-drift-checks
 title: "91 doc freshness and drift checks"
 sidebar_label: "91 doc freshness and drift checks"
 sidebar_position: 91
+
 ---
 
 # 91 doc freshness and drift checks

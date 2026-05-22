@@ -1,7 +1,7 @@
 ---
-id: notes/library/README
 title: "Accounting Workflows Documentation Library"
 sidebar_label: "Accounting Workflows Documentation Library"
+
 ---
 
 # Accounting Workflows Documentation Library

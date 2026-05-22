@@ -1,8 +1,8 @@
 ---
-id: notes/library/20-automation/23-cadence-slo-and-alerting
 title: "23 cadence slo and alerting"
 sidebar_label: "23 cadence slo and alerting"
 sidebar_position: 23
+
 ---
 
 # 23 cadence slo and alerting

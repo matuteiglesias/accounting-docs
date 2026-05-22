@@ -1,8 +1,8 @@
 ---
-id: notes/library/90-governance/99-evidence-map-template
 title: "99 evidence map template"
 sidebar_label: "99 evidence map template"
 sidebar_position: 99
+
 ---
 
 # 99 evidence map template
@@ -26,5 +26,5 @@ Use this section format at the bottom of authority docs.
 
 ### Known assumptions
 
-- <assumption 1>
-- <assumption 2>
+- assumption 1
+- assumption 2

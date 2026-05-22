@@ -1,8 +1,8 @@
 ---
-id: notes/library/30-consumers/30-consumer-start-here
 title: "30 consumer start here"
 sidebar_label: "30 consumer start here"
 sidebar_position: 30
+
 ---
 
 # 30 consumer start here

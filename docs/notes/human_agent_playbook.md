@@ -1,7 +1,7 @@
 ---
-id: notes/human_agent_playbook
 title: "Human + Agent Operations Playbook (Stability-First)"
 sidebar_label: "Human + Agent Operations Playbook (Stability-First)"
+
 ---
 
 # Human + Agent Operations Playbook (Stability-First)

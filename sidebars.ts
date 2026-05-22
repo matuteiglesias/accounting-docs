@@ -6,7 +6,8 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
  * Important:
  * - docs.path is docs/notes
  * - routeBasePath is /notes
- * - therefore sidebar doc IDs are relative to docs/notes and do NOT include "notes/"
+ * - Docusaurus strips number prefixes from doc IDs:
+ *   library/00-foundations/00-index.md -> library/foundations/index
  */
 const sidebars: SidebarsConfig = {
   docsSidebar: [
@@ -16,12 +17,12 @@ const sidebars: SidebarsConfig = {
       label: 'Foundations',
       link: {
         type: 'doc',
-        id: 'library/00-foundations/00-index',
+        id: 'library/foundations/index',
       },
       items: [
-        'library/00-foundations/01-doc-map-by-role',
-        'library/00-foundations/02-glossary',
-        'library/00-foundations/03-pipeline-abstractions',
+        'library/foundations/doc-map-by-role',
+        'library/foundations/glossary',
+        'library/foundations/pipeline-abstractions',
       ],
     },
     {
@@ -29,16 +30,16 @@ const sidebars: SidebarsConfig = {
       label: 'Operations',
       link: {
         type: 'doc',
-        id: 'library/10-operations/10-operator-start-here',
+        id: 'library/operations/operator-start-here',
       },
       items: [
         'environment_bootstrap',
         'human_agent_playbook',
-        'library/10-operations/11-environment-bootstrap',
-        'library/10-operations/12-command-surface',
-        'library/10-operations/13-run-modes-smoke-vs-run',
-        'library/10-operations/14-stage-output-checklist',
-        'library/10-operations/15-incidents-first-15-minutes',
+        'library/operations/environment-bootstrap',
+        'library/operations/command-surface',
+        'library/operations/run-modes-smoke-vs-run',
+        'library/operations/stage-output-checklist',
+        'library/operations/incidents-first-15-minutes',
       ],
     },
     {
@@ -46,14 +47,14 @@ const sidebars: SidebarsConfig = {
       label: 'Automation',
       link: {
         type: 'doc',
-        id: 'library/20-automation/20-automation-start-here',
+        id: 'library/automation/automation-start-here',
       },
       items: [
         'automation_wiring_spec',
-        'library/20-automation/21-scheduler-wiring-spec',
-        'library/20-automation/22-runtime-env-contract',
-        'library/20-automation/23-cadence-slo-and-alerting',
-        'library/20-automation/24-recovery-and-rollback',
+        'library/automation/scheduler-wiring-spec',
+        'library/automation/runtime-env-contract',
+        'library/automation/cadence-slo-and-alerting',
+        'library/automation/recovery-and-rollback',
       ],
     },
     {
@@ -61,12 +62,12 @@ const sidebars: SidebarsConfig = {
       label: 'Consumers',
       link: {
         type: 'doc',
-        id: 'library/30-consumers/30-consumer-start-here',
+        id: 'library/consumers/consumer-start-here',
       },
       items: [
-        'library/30-consumers/31-report-consumer-guide',
-        'library/30-consumers/32-where-to-find-latest-outputs',
-        'library/30-consumers/33-common-questions-and-answers',
+        'library/consumers/report-consumer-guide',
+        'library/consumers/where-to-find-latest-outputs',
+        'library/consumers/common-questions-and-answers',
         'frontend_snapshot_contract',
       ],
     },
@@ -75,11 +76,11 @@ const sidebars: SidebarsConfig = {
       label: 'Development',
       link: {
         type: 'doc',
-        id: 'library/40-development/40-dev-start-here',
+        id: 'library/development/dev-start-here',
       },
       items: [
-        'library/40-development/41-refactor-definition-of-done',
-        'library/40-development/42-contract-change-protocol',
+        'library/development/refactor-definition-of-done',
+        'library/development/contract-change-protocol',
         'entrypoints',
         'canonical_commands',
         'output_contracts',
@@ -90,11 +91,11 @@ const sidebars: SidebarsConfig = {
       label: 'Governance',
       link: {
         type: 'doc',
-        id: 'library/90-governance/90-doc-ownership-and-review',
+        id: 'library/governance/doc-ownership-and-review',
       },
       items: [
-        'library/90-governance/91-doc-freshness-and-drift-checks',
-        'library/90-governance/99-evidence-map-template',
+        'library/governance/doc-freshness-and-drift-checks',
+        'library/governance/evidence-map-template',
         'documentation_compass',
         'docs_execution_plan',
       ],

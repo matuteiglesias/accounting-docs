@@ -1,7 +1,7 @@
 ---
-id: notes/runbook
 title: "📘 Runbook — Output Contracts v1"
 sidebar_label: "📘 Runbook — Output Contracts v1"
+
 ---
 
 **Runbook: Output Contracts (v1)**

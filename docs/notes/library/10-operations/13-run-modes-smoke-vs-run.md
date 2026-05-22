@@ -1,8 +1,8 @@
 ---
-id: notes/library/10-operations/13-run-modes-smoke-vs-run
 title: "13 run modes smoke vs run"
 sidebar_label: "13 run modes smoke vs run"
 sidebar_position: 13
+
 ---
 
 # 13 run modes smoke vs run

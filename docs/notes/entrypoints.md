@@ -1,7 +1,7 @@
 ---
-id: notes/entrypoints
 title: "Accounting Backend Entrypoints"
 sidebar_label: "Accounting Backend Entrypoints"
+
 ---
 
 # Accounting Backend Entrypoints

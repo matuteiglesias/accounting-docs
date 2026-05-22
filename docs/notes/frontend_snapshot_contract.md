@@ -1,7 +1,7 @@
 ---
-id: notes/frontend_snapshot_contract
 title: "Accounting Frontend Snapshot Contract"
 sidebar_label: "Accounting Frontend Snapshot Contract"
+
 ---
 
 # Accounting Frontend Snapshot Contract

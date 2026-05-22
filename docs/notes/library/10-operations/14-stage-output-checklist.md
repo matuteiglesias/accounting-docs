@@ -1,8 +1,8 @@
 ---
-id: notes/library/10-operations/14-stage-output-checklist
 title: "14 stage output checklist"
 sidebar_label: "14 stage output checklist"
 sidebar_position: 14
+
 ---
 
 # 14 stage output checklist

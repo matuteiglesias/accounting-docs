@@ -1,7 +1,7 @@
 ---
-id: notes/module_inventory
 title: "Accounting Backend Module Inventory"
 sidebar_label: "Accounting Backend Module Inventory"
+
 ---
 
 # Accounting Backend Module Inventory

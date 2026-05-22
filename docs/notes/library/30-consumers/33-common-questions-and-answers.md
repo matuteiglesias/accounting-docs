@@ -1,8 +1,8 @@
 ---
-id: notes/library/30-consumers/33-common-questions-and-answers
 title: "33 common questions and answers"
 sidebar_label: "33 common questions and answers"
 sidebar_position: 33
+
 ---
 
 # 33 common questions and answers
