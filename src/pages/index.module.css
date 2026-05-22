@@ -1,0 +1,128 @@
+.heroBanner {
+  padding: 5rem 0 4rem;
+}
+
+.heroTopline {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-bottom: 0.8rem;
+}
+
+.heroButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.section {
+  padding: 3rem 0;
+}
+
+.sectionAlt {
+  background: var(--ifm-color-emphasis-100);
+}
+
+.sectionTitle {
+  margin-bottom: 0.4rem;
+}
+
+.sectionLead {
+  color: var(--ifm-color-emphasis-700);
+  max-width: 760px;
+  margin-bottom: 1.2rem;
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+  padding: 1rem;
+  background: var(--ifm-background-surface-color);
+}
+
+.cardTitle {
+  margin-bottom: 0.45rem;
+}
+
+.cardText {
+  margin-bottom: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.mapCard {
+  display: block;
+  text-decoration: none;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+  padding: 1rem;
+  color: inherit;
+  background: var(--ifm-background-surface-color);
+}
+
+.mapCard:hover {
+  border-color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.mapCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.mapCardTitle {
+  margin: 0;
+}
+
+.mapCardText {
+  margin: 0.6rem 0;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.mapCardCta {
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+.badge {
+  font-size: 0.7rem;
+  border: 1px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+}
+
+.truths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.truthCard {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+@media (max-width: 996px) {
+  .grid3,
+  .grid2,
+  .truths {
+    grid-template-columns: 1fr;
+  }
+}
