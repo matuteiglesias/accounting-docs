@@ -14,7 +14,7 @@ Use this section format at the bottom of authority docs.
 
 ## Evidence map
 
-### Commands validated (<YYYY-MM-DD>)
+### Commands validated (YYYY-MM-DD)
 
 - `<command>` -> pass/fail
 - `<command>` -> pass/fail
