@@ -12,6 +12,7 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
 const sidebars: SidebarsConfig = {
   docsSidebar: [
     'intro',
+
     {
       type: 'category',
       label: 'Foundations',
@@ -25,6 +26,7 @@ const sidebars: SidebarsConfig = {
         'library/foundations/pipeline-abstractions',
       ],
     },
+
     {
       type: 'category',
       label: 'Operations',
@@ -35,6 +37,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'environment_bootstrap',
         'human_agent_playbook',
+        'accounting_spine_runbook',
         'library/operations/environment-bootstrap',
         'library/operations/command-surface',
         'library/operations/run-modes-smoke-vs-run',
@@ -42,6 +45,7 @@ const sidebars: SidebarsConfig = {
         'library/operations/incidents-first-15-minutes',
       ],
     },
+
     {
       type: 'category',
       label: 'Automation',
@@ -57,6 +61,7 @@ const sidebars: SidebarsConfig = {
         'library/automation/recovery-and-rollback',
       ],
     },
+
     {
       type: 'category',
       label: 'Consumers',
@@ -65,12 +70,14 @@ const sidebars: SidebarsConfig = {
         id: 'library/consumers/consumer-start-here',
       },
       items: [
+        'human_report_catalog',
+        'frontend_snapshot_contract',
         'library/consumers/report-consumer-guide',
         'library/consumers/where-to-find-latest-outputs',
         'library/consumers/common-questions-and-answers',
-        'frontend_snapshot_contract',
       ],
     },
+
     {
       type: 'category',
       label: 'Development',
@@ -79,13 +86,14 @@ const sidebars: SidebarsConfig = {
         id: 'library/development/dev-start-here',
       },
       items: [
-        'library/development/refactor-definition-of-done',
-        'library/development/contract-change-protocol',
         'entrypoints',
         'canonical_commands',
-        'output_contracts',
+        'module_inventory',
+        'library/development/refactor-definition-of-done',
+        'library/development/contract-change-protocol',
       ],
     },
+
     {
       type: 'category',
       label: 'Governance',
@@ -94,29 +102,34 @@ const sidebars: SidebarsConfig = {
         id: 'library/governance/doc-ownership-and-review',
       },
       items: [
-        'library/governance/doc-freshness-and-drift-checks',
-        'library/governance/evidence-map-template',
+        'docs_frontmatter_contract',
         'documentation_compass',
         'docs_execution_plan',
+        'library/governance/doc-freshness-and-drift-checks',
+        'library/governance/evidence-map-template',
       ],
     },
+
     {
       type: 'category',
       label: 'Architecture & Contracts',
       items: [
         'current_state_map',
         'artifact_ladder',
-        'accounting_spine_runbook',
-        'module_inventory',
         'contracts',
-        'automation_wiring_spec',
+        'output_contracts',
+        'ledger_taxonomy',
+        'metric_registry_contract',
+        'debt_resolver_contract',
       ],
     },
+
     {
       type: 'category',
       label: 'Context & Journal',
       items: [
         'narrative',
+        'dev_diary',
         'journal',
         'runbook',
       ],
