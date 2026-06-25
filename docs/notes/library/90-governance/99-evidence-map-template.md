@@ -1,9 +1,11 @@
 ---
-title: "99 evidence map template"
-sidebar_label: "99 evidence map template"
+title: "Evidence Map Template"
+sidebar_label: "Evidence map"
 sidebar_position: 99
-
+description: "Template for linking documentation claims to source files, commands, artifacts, and evidence."
+doc_type: "template"
 ---
+
 
 # 99 evidence map template
 

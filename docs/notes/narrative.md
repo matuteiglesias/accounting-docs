@@ -1,8 +1,11 @@
 ---
 title: "Narrative"
 sidebar_label: "Narrative"
-
+sidebar_position: 16
+description: "Narrative overview of the accounting system, its purpose, and its development direction."
+doc_type: "narrative"
 ---
+
 
 Perfecto: tu “negocio” no es solo contabilidad de gastos, es un sistema de renta inmobiliaria familiar con gobernanza frágil, préstamos internos, y riesgo de desvío de caja. Eso cambia por completo qué historias valen la pena y qué figuras son “estándar”.
 

@@ -1,9 +1,11 @@
 ---
-title: "31 report consumer guide"
-sidebar_label: "31 report consumer guide"
+title: "Report Consumer Guide"
+sidebar_label: "Report guide"
 sidebar_position: 31
-
+description: "Guide for reading accounting reports, understanding report scope, and avoiding misuse of outputs."
+doc_type: "guide"
 ---
+
 
 # 31 report consumer guide
 

@@ -1,9 +1,11 @@
 ---
-title: "15 incidents first 15 minutes"
-sidebar_label: "15 incidents first 15 minutes"
+title: "Incidents: First 15 Minutes"
+sidebar_label: "Incidents"
 sidebar_position: 15
-
+description: "First-response checklist for failed runs, stale outputs, broken latest links, and missing artifacts."
+doc_type: "runbook"
 ---
+
 
 # 15 incidents first 15 minutes
 

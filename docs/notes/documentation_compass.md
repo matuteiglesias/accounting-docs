@@ -1,8 +1,11 @@
 ---
-title: "Documentation Compass (Humans + Agents)"
-sidebar_label: "Documentation Compass (Humans + Agents)"
-
+title: "Documentation Compass"
+sidebar_label: "Docs compass"
+sidebar_position: 2
+description: "Explains how humans and agents should navigate, maintain, and extend the accounting documentation."
+doc_type: "guide"
 ---
+
 
 # Documentation Compass (Humans + Agents)
 
@@ -100,4 +103,4 @@ Prefer `notes/accounting_spine_runbook.md`, `notes/output_contracts.md`, and thi
 
 ## Documentation library (numbered)
 
-The hierarchical library lives under `notes/library/` with numbered sections (`00`-`99`) for predictable navigation and future growth. Start at `notes/library/00-foundations/00-index.md`.
+The hierarchical library lives under `notes/library/` with numbered sections (`00`-`99`) for predictable navigation and future growth. Start at `/notes/library/foundations/index`.

@@ -1,9 +1,11 @@
 ---
-title: "33 common questions and answers"
-sidebar_label: "33 common questions and answers"
+title: "Common Questions and Answers"
+sidebar_label: "Q&A"
 sidebar_position: 33
-
+description: "Answers common questions about accounting reports, output freshness, and interpretation boundaries."
+doc_type: "faq"
 ---
+
 
 # 33 common questions and answers
 

@@ -1,8 +1,11 @@
 ---
-title: "Automation Wiring Spec (Wave 2)"
-sidebar_label: "Automation Wiring Spec (Wave 2)"
-
+title: "Automation Wiring Spec"
+sidebar_label: "Automation wiring"
+sidebar_position: 14
+description: "Specification for scheduled runs, automation wiring, and live accounting workflow execution."
+doc_type: "contract"
 ---
+
 
 # Automation Wiring Spec (Wave 2)
 

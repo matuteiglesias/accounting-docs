@@ -1,8 +1,11 @@
 ---
-title: "Documentation Production Team + Execution Plan"
-sidebar_label: "Documentation Production Team + Execution Plan"
-
+title: "Docs Execution Plan"
+sidebar_label: "Docs plan"
+sidebar_position: 17
+description: "Plan for producing, reviewing, and improving accounting documentation coverage."
+doc_type: "plan"
 ---
+
 
 # Documentation Production Team + Execution Plan
 

@@ -1,8 +1,11 @@
 ---
 title: "Journal"
 sidebar_label: "Journal"
-
+sidebar_position: 99
+description: "Chronological notes and development journal for the accounting documentation effort."
+doc_type: "journal"
 ---
+
 
 Bien. Hagamos el lock-in como “Decision Record” corto y operativo, y dejemos claro qué se de-prioriza.
 

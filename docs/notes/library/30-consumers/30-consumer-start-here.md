@@ -1,9 +1,11 @@
 ---
-title: "30 consumer start here"
-sidebar_label: "30 consumer start here"
+title: "Consumer Start Here"
+sidebar_label: "Start here"
 sidebar_position: 30
-
+description: "Entry point for people or tools consuming accounting reports, snapshots, and human-facing outputs."
+doc_type: "guide"
 ---
+
 
 # 30 consumer start here
 

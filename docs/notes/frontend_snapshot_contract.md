@@ -1,8 +1,11 @@
 ---
-title: "Accounting Frontend Snapshot Contract"
-sidebar_label: "Accounting Frontend Snapshot Contract"
-
+title: "Frontend Snapshot Contract"
+sidebar_label: "Frontend snapshot"
+sidebar_position: 13
+description: "Contract for frontend-readable accounting snapshots and published latest artifacts."
+doc_type: "contract"
 ---
+
 
 # Accounting Frontend Snapshot Contract
 

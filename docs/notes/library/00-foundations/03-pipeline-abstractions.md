@@ -1,9 +1,11 @@
 ---
-title: "03 pipeline abstractions"
-sidebar_label: "03 pipeline abstractions"
+title: "Pipeline Abstractions"
+sidebar_label: "Pipeline abstractions"
 sidebar_position: 3
-
+description: "Explains the main abstractions used across the accounting pipeline and artifact lifecycle."
+doc_type: "reference"
 ---
+
 
 # 03 pipeline abstractions
 

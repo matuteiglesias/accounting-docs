@@ -1,8 +1,11 @@
 ---
-title: "Accounting Backend Output Contracts"
-sidebar_label: "Accounting Backend Output Contracts"
-
+title: "Output Contracts"
+sidebar_label: "Output contracts"
+sidebar_position: 10
+description: "Defines artifact families, expected outputs, freshness expectations, and publishing contracts."
+doc_type: "contract"
 ---
+
 
 # Accounting Backend Output Contracts
 

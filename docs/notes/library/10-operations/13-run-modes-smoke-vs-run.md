@@ -1,9 +1,11 @@
 ---
-title: "13 run modes smoke vs run"
-sidebar_label: "13 run modes smoke vs run"
+title: "Run Modes: Smoke vs Run"
+sidebar_label: "Smoke vs run"
 sidebar_position: 13
-
+description: "Explains the difference between smoke runs, full runs, live runs, and downstream rebuilds."
+doc_type: "guide"
 ---
+
 
 # 13 run modes smoke vs run
 

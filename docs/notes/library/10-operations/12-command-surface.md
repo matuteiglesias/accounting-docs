@@ -1,9 +1,11 @@
 ---
-title: "12 command surface"
-sidebar_label: "12 command surface"
+title: "Command Surface"
+sidebar_label: "Commands"
 sidebar_position: 12
-
+description: "Operational command catalog for smoke runs, live runs, checks, and output inspection."
+doc_type: "reference"
 ---
+
 
 # 12 command surface
 

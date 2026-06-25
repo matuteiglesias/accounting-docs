@@ -1,8 +1,11 @@
 ---
-title: "Accounting Canonical Commands"
-sidebar_label: "Accounting Canonical Commands"
-
+title: "Canonical Commands"
+sidebar_label: "Commands"
+sidebar_position: 6
+description: "Canonical command surface for running, checking, and inspecting accounting workflows."
+doc_type: "reference"
 ---
+
 
 # Accounting Canonical Commands
 

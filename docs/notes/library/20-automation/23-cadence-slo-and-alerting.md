@@ -1,9 +1,11 @@
 ---
-title: "23 cadence slo and alerting"
-sidebar_label: "23 cadence slo and alerting"
+title: "Cadence, SLO, and Alerting"
+sidebar_label: "Cadence + alerts"
 sidebar_position: 23
-
+description: "Defines run cadence expectations, freshness targets, alerting signals, and operational thresholds."
+doc_type: "contract"
 ---
+
 
 # 23 cadence slo and alerting
 

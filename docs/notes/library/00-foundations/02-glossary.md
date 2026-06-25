@@ -1,9 +1,11 @@
 ---
-title: "02 glossary"
-sidebar_label: "02 glossary"
+title: "Glossary"
+sidebar_label: "Glossary"
 sidebar_position: 2
-
+description: "Shared vocabulary for accounting workflows, artifact families, runs, outputs, and consumers."
+doc_type: "reference"
 ---
+
 
 # 02 glossary
 

@@ -1,9 +1,11 @@
 ---
-title: "10 operator start here"
-sidebar_label: "10 operator start here"
+title: "Operator Start Here"
+sidebar_label: "Start here"
 sidebar_position: 10
-
+description: "Entry point for safely running, inspecting, and recovering the accounting backend."
+doc_type: "guide"
 ---
+
 
 # 10 operator start here
 

@@ -1,8 +1,11 @@
 ---
-title: "Environment Bootstrap (Wave 1)"
-sidebar_label: "Environment Bootstrap (Wave 1)"
-
+title: "Environment Bootstrap"
+sidebar_label: "Environment"
+sidebar_position: 7
+description: "Environment setup, secrets, paths, and runtime assumptions required for accounting operations."
+doc_type: "runbook"
 ---
+
 
 # Environment Bootstrap (Wave 1)
 

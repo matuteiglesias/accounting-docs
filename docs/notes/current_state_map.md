@@ -1,8 +1,11 @@
 ---
-title: "Accounting Backend Current State Map"
-sidebar_label: "Accounting Backend Current State Map"
-
+title: "Current State Map"
+sidebar_label: "Current state"
+sidebar_position: 3
+description: "Summarizes the current accounting backend architecture, active components, and known boundaries."
+doc_type: "inventory"
 ---
+
 
 # Accounting Backend Current State Map
 

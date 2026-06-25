@@ -1,9 +1,11 @@
 ---
-title: "11 environment bootstrap"
-sidebar_label: "11 environment bootstrap"
+title: "Environment Bootstrap"
+sidebar_label: "Environment"
 sidebar_position: 11
-
+description: "Operator checklist for environment variables, local paths, credentials, and runtime setup."
+doc_type: "runbook"
 ---
+
 
 # 11 environment bootstrap
 

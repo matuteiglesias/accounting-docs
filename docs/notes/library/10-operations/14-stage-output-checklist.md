@@ -1,9 +1,11 @@
 ---
-title: "14 stage output checklist"
-sidebar_label: "14 stage output checklist"
+title: "Stage Output Checklist"
+sidebar_label: "Stage outputs"
 sidebar_position: 14
-
+description: "Checklist for verifying expected outputs after each accounting pipeline stage."
+doc_type: "checklist"
 ---
+
 
 # 14 stage output checklist
 

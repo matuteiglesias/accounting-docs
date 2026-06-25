@@ -1,9 +1,11 @@
 ---
-title: "42 contract change protocol"
-sidebar_label: "42 contract change protocol"
+title: "Contract Change Protocol"
+sidebar_label: "Contract changes"
 sidebar_position: 42
-
+description: "Protocol for changing ledger, metric, artifact, frontend, or documentation contracts safely."
+doc_type: "contract"
 ---
+
 
 # 42 contract change protocol
 

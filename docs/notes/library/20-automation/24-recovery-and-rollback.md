@@ -1,9 +1,11 @@
 ---
-title: "24 recovery and rollback"
-sidebar_label: "24 recovery and rollback"
+title: "Recovery and Rollback"
+sidebar_label: "Recovery"
 sidebar_position: 24
-
+description: "Recovery and rollback guidance for bad runs, stale latest pointers, and broken published artifacts."
+doc_type: "runbook"
 ---
+
 
 # 24 recovery and rollback
 

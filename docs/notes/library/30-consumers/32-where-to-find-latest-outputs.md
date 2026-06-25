@@ -1,9 +1,11 @@
 ---
-title: "32 where to find latest outputs"
-sidebar_label: "32 where to find latest outputs"
+title: "Where to Find Latest Outputs"
+sidebar_label: "Latest outputs"
 sidebar_position: 32
-
+description: "Explains where current accounting outputs are published and how latest artifacts should be located."
+doc_type: "reference"
 ---
+
 
 # 32 where to find latest outputs
 

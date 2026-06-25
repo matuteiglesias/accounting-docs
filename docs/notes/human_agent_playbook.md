@@ -1,8 +1,11 @@
 ---
-title: "Human + Agent Operations Playbook (Stability-First)"
-sidebar_label: "Human + Agent Operations Playbook (Stability-First)"
-
+title: "Human + Agent Playbook"
+sidebar_label: "Agent playbook"
+sidebar_position: 15
+description: "Operating guidance for humans and coding agents extending the accounting system safely."
+doc_type: "playbook"
 ---
+
 
 # Human + Agent Operations Playbook (Stability-First)
 

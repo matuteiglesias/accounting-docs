@@ -1,8 +1,11 @@
 ---
-title: "Accounting Artifact Ladder"
-sidebar_label: "Accounting Artifact Ladder"
-
+title: "Artifact Ladder"
+sidebar_label: "Artifact ladder"
+sidebar_position: 12
+description: "Explains how raw accounting inputs become progressively more stable downstream artifacts."
+doc_type: "reference"
 ---
+
 
 # Accounting Artifact Ladder
 

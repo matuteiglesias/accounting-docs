@@ -1,9 +1,11 @@
 ---
-title: "20 automation start here"
-sidebar_label: "20 automation start here"
+title: "Automation Start Here"
+sidebar_label: "Start here"
 sidebar_position: 20
-
+description: "Entry point for scheduled accounting runs, automation contracts, and live workflow stewardship."
+doc_type: "guide"
 ---
+
 
 # 20 automation start here
 

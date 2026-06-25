@@ -1,8 +1,11 @@
 ---
-title: "📘 Runbook — Output Contracts v1"
-sidebar_label: "📘 Runbook — Output Contracts v1"
-
+title: "Runbook"
+sidebar_label: "Runbook"
+sidebar_position: 9
+description: "General runbook for output contracts, inspection, and recovery-oriented operation."
+doc_type: "runbook"
 ---
+
 
 **Runbook: Output Contracts (v1)**
 

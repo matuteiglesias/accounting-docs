@@ -1,9 +1,11 @@
 ---
-title: "41 refactor definition of done"
-sidebar_label: "41 refactor definition of done"
+title: "Refactor Definition of Done"
+sidebar_label: "Refactor done"
 sidebar_position: 41
-
+description: "Definition of done for refactors touching accounting logic, contracts, generated outputs, or docs."
+doc_type: "checklist"
 ---
+
 
 # 41 refactor definition of done
 

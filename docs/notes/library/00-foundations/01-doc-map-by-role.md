@@ -1,9 +1,11 @@
 ---
-title: "01 doc map by role"
-sidebar_label: "01 doc map by role"
+title: "Doc Map by Role"
+sidebar_label: "Doc map by role"
 sidebar_position: 1
-
+description: "Maps documentation entrypoints to operators, developers, automation stewards, and consumers."
+doc_type: "guide"
 ---
+
 
 # 01 doc map by role
 
@@ -12,21 +14,21 @@ Last reviewed: 2026-05-22
 
 ## Operator
 
-- `../10-operations/10-operator-start-here.md`
+- `/notes/library/operations/operator-start-here`
 - `../10-operations/11-environment-bootstrap.md`
 - `../10-operations/14-stage-output-checklist.md`
 - `../10-operations/15-incidents-first-15-minutes.md`
 
 ## Automation steward
 
-- `../20-automation/20-automation-start-here.md`
+- `/notes/library/automation/automation-start-here`
 - `../20-automation/21-scheduler-wiring-spec.md`
 - `../20-automation/23-cadence-slo-and-alerting.md`
 - `../20-automation/24-recovery-and-rollback.md`
 
 ## Consumer / stakeholder
 
-- `../30-consumers/30-consumer-start-here.md`
+- `/notes/library/consumers/consumer-start-here`
 - `../30-consumers/31-report-consumer-guide.md`
 - `../30-consumers/33-common-questions-and-answers.md`
 

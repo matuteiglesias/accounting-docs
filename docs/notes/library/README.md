@@ -1,8 +1,11 @@
 ---
-title: "Accounting Workflows Documentation Library"
-sidebar_label: "Accounting Workflows Documentation Library"
-
+title: "Accounting Workflow Library"
+sidebar_label: "Library"
+sidebar_position: 0
+description: "Structured documentation library for accounting operations, automation, consumers, development, and governance."
+doc_type: "index"
 ---
+
 
 # Accounting Workflows Documentation Library
 

@@ -1,8 +1,11 @@
 ---
 title: "Contracts"
 sidebar_label: "Contracts"
-
+sidebar_position: 11
+description: "Contract-level expectations for accounting data, generated artifacts, and downstream consumers."
+doc_type: "contract"
 ---
+
 
 
 Purpose: Build canonical ledger dataframe and write ledger_canonical.csv (plus preserve anomalies).

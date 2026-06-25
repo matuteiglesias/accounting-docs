@@ -1,9 +1,11 @@
 ---
-title: "00 index"
-sidebar_label: "00 index"
+title: "Foundations"
+sidebar_label: "Foundations"
 sidebar_position: 0
-
+description: "Foundational map for the accounting system, its concepts, roles, and navigation paths."
+doc_type: "index"
 ---
+
 
 # 00 index
 
@@ -12,9 +14,9 @@ Last reviewed: 2026-05-21
 
 ## Start here
 
-- Operators: `../10-operations/10-operator-start-here.md`
-- Automation stewards: `../20-automation/20-automation-start-here.md`
-- Report consumers: `../30-consumers/30-consumer-start-here.md`
+- Operators: `/notes/library/operations/operator-start-here`
+- Automation stewards: `/notes/library/automation/automation-start-here`
+- Report consumers: `/notes/library/consumers/consumer-start-here`
 - Developers: `../40-development/40-dev-start-here.md`
 
 ## Wave 1 ready page

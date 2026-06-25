@@ -1,8 +1,11 @@
 ---
-title: "Accounting spine runbook"
-sidebar_label: "Accounting spine runbook"
-
+title: "Accounting Spine Runbook"
+sidebar_label: "Spine runbook"
+sidebar_position: 8
+description: "Operational runbook for the accounting spine from ingest through published outputs."
+doc_type: "runbook"
 ---
+
 
 # Accounting spine runbook
 

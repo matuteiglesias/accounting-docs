@@ -1,9 +1,11 @@
 ---
-title: "40 dev start here"
-sidebar_label: "40 dev start here"
+title: "Developer Start Here"
+sidebar_label: "Start here"
 sidebar_position: 40
-
+description: "Entry point for developers changing the accounting backend, docs, or output contracts."
+doc_type: "guide"
 ---
+
 
 # 40 dev start here
 

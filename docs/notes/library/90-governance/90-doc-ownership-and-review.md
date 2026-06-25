@@ -1,9 +1,11 @@
 ---
-title: "90 doc ownership and review"
-sidebar_label: "90 doc ownership and review"
+title: "Doc Ownership and Review"
+sidebar_label: "Ownership"
 sidebar_position: 90
-
+description: "Governance rules for documentation ownership, review cadence, and responsibility boundaries."
+doc_type: "governance"
 ---
+
 
 # 90 doc ownership and review
 

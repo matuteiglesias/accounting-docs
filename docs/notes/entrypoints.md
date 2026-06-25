@@ -1,8 +1,11 @@
 ---
-title: "Accounting Backend Entrypoints"
-sidebar_label: "Accounting Backend Entrypoints"
-
+title: "Backend Entrypoints"
+sidebar_label: "Entrypoints"
+sidebar_position: 5
+description: "Catalog of commands, scripts, and module entrypoints used to run accounting workflows."
+doc_type: "reference"
 ---
+
 
 # Accounting Backend Entrypoints
 

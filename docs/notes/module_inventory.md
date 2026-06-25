@@ -1,8 +1,11 @@
 ---
-title: "Accounting Backend Module Inventory"
-sidebar_label: "Accounting Backend Module Inventory"
-
+title: "Module Inventory"
+sidebar_label: "Module inventory"
+sidebar_position: 4
+description: "Inventory of backend modules, responsibilities, and ownership boundaries."
+doc_type: "inventory"
 ---
+
 
 # Accounting Backend Module Inventory
 

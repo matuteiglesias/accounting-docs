@@ -1,9 +1,11 @@
 ---
-title: "22 runtime env contract"
-sidebar_label: "22 runtime env contract"
+title: "Runtime Environment Contract"
+sidebar_label: "Runtime env"
 sidebar_position: 22
-
+description: "Contract for environment variables, runtime isolation, working directories, and execution assumptions."
+doc_type: "contract"
 ---
+
 
 # 22 runtime env contract
 

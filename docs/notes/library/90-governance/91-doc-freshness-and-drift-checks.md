@@ -1,9 +1,11 @@
 ---
-title: "91 doc freshness and drift checks"
-sidebar_label: "91 doc freshness and drift checks"
+title: "Doc Freshness and Drift Checks"
+sidebar_label: "Freshness checks"
 sidebar_position: 91
-
+description: "Checks for keeping documentation aligned with the accounting backend and generated artifacts."
+doc_type: "checklist"
 ---
+
 
 # 91 doc freshness and drift checks
 
