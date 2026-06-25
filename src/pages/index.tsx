@@ -12,6 +12,7 @@ type QuickLink = {
   description: string;
   to: string;
   cta: string;
+  eyebrow: string;
 };
 
 type SectionCard = {
@@ -21,25 +22,33 @@ type SectionCard = {
   badge?: string;
 };
 
+type Principle = {
+  title: string;
+  body: ReactNode;
+};
+
 const quickLinks: QuickLink[] = [
   {
+    eyebrow: 'Operate',
     title: 'Start Operating in 15 Minutes',
     description:
-      'Bootstrap the environment, run smoke checks, and classify failures quickly.',
+      'Bootstrap the environment, run smoke checks, and classify failures without touching internal outputs first.',
     to: '/notes/library/operations/operator-start-here',
     cta: 'Open Operator Start',
   },
   {
+    eyebrow: 'Automate',
     title: 'Set Up Periodic Automation',
     description:
-      'Use canonical scheduling wiring for systemd/cron and publish latest snapshots.',
+      'Use the canonical scheduler, runtime environment, cadence, and recovery contracts for live runs.',
     to: '/notes/library/automation/automation-start-here',
     cta: 'Open Automation Guide',
   },
   {
+    eyebrow: 'Consume',
     title: 'Consume Reports Safely',
     description:
-      'Find human reports, metric views, and debt snapshots without touching internals.',
+      'Find published human reports, metric views, and latest snapshots without depending on backend internals.',
     to: '/notes/library/consumers/consumer-start-here',
     cta: 'Open Consumer Guide',
   },
@@ -59,47 +68,90 @@ const sectionCards: SectionCard[] = [
   },
   {
     title: 'Automation',
-    desc: 'Scheduler wiring, env contracts, cadence/SLO guidance, and recovery playbooks.',
+    desc: 'Scheduler wiring, runtime contracts, cadence/SLO guidance, and recovery playbooks.',
     to: '/notes/library/automation/automation-start-here',
   },
   {
     title: 'Consumers',
-    desc: 'Where to find latest outputs and how to answer common business questions.',
+    desc: 'Where to find latest outputs and how to answer common business questions safely.',
     to: '/notes/library/consumers/consumer-start-here',
   },
   {
     title: 'Development',
-    desc: 'Refactor Definition of Done, contract-change protocol, and release gates.',
+    desc: 'Refactor definition of done, contract-change protocol, and safe extension gates.',
     to: '/notes/library/development/dev-start-here',
     badge: 'Quality Gate',
   },
   {
     title: 'Governance',
-    desc: 'Ownership, freshness checks, and evidence-map templates to prevent drift.',
+    desc: 'Ownership, freshness checks, evidence maps, and documentation drift controls.',
     to: '/notes/library/governance/doc-ownership-and-review',
   },
 ];
 
-function HomepageHeader() {
+const principles: Principle[] = [
+  {
+    title: 'Canonical command surface',
+    body: (
+      <>
+        Prefer canonical <code>make</code> targets for operations and automation.
+        This keeps docs, scripts, and incident response aligned.
+      </>
+    ),
+  },
+  {
+    title: 'Consumer-safe boundary',
+    body: (
+      <>
+        Consumers should read published latest outputs. Internal output folders are
+        for debugging and forensic analysis only.
+      </>
+    ),
+  },
+  {
+    title: 'Evidence-driven docs',
+    body: (
+      <>
+        Authority pages should include validated commands, code anchors, and known
+        assumptions so docs do not drift from the system.
+      </>
+    ),
+  },
+];
+
+function HomepageHeader(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
 
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
-        <div className={styles.heroTopline}>Accounting Workflows Documentation</div>
+        <div className={styles.heroTopline}>
+          Accounting Workflows Documentation
+        </div>
+
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
+
         <p className="hero__subtitle">{siteConfig.tagline}</p>
 
         <div className={styles.heroButtons}>
-          <Link className="button button--secondary button--lg" to="/notes/library/foundations/index">
+          <Link
+            className="button button--secondary button--lg"
+            to="/notes/library/foundations/index">
             Start Here
           </Link>
-          <Link className="button button--outline button--lg" to="/notes/library/operations/incidents-first-15-minutes">
+
+          <Link
+            className="button button--outline button--lg"
+            to="/notes/library/operations/incidents-first-15-minutes">
             Incident First 15 Minutes
           </Link>
         </div>
+
+        <p className={styles.heroTopline}>
+          Canonical runbooks · Output contracts · Recovery playbooks · Consumer-safe reporting
+        </p>
       </div>
     </header>
   );
@@ -112,17 +164,23 @@ function QuickStartGrid(): ReactNode {
         <Heading as="h2" className={styles.sectionTitle}>
           Quick Start by Intent
         </Heading>
+
         <p className={styles.sectionLead}>
-          Pick the path that matches your immediate need. Each track links to a curated runbook sequence.
+          Pick the path that matches your immediate job. Each track points to a
+          curated sequence instead of a loose pile of pages.
         </p>
 
         <div className={styles.grid3}>
           {quickLinks.map((item) => (
             <article key={item.title} className={styles.card}>
+              <div className={styles.heroTopline}>{item.eyebrow}</div>
+
               <Heading as="h3" className={styles.cardTitle}>
                 {item.title}
               </Heading>
+
               <p className={styles.cardText}>{item.description}</p>
+
               <Link className="button button--primary button--sm" to={item.to}>
                 {item.cta}
               </Link>
@@ -141,8 +199,10 @@ function DocumentationMap(): ReactNode {
         <Heading as="h2" className={styles.sectionTitle}>
           Documentation Library Map
         </Heading>
+
         <p className={styles.sectionLead}>
-          Numbered sections from 00 to 99 keep navigation stable as docs grow. Use this map as your control panel.
+          Files can keep numeric prefixes for stable ordering. Routes and labels
+          stay clean for humans and downstream consumers.
         </p>
 
         <div className={styles.grid2}>
@@ -152,8 +212,12 @@ function DocumentationMap(): ReactNode {
                 <Heading as="h3" className={styles.mapCardTitle}>
                   {section.title}
                 </Heading>
-                {section.badge ? <span className={styles.badge}>{section.badge}</span> : null}
+
+                {section.badge ? (
+                  <span className={styles.badge}>{section.badge}</span>
+                ) : null}
               </div>
+
               <p className={styles.mapCardText}>{section.desc}</p>
               <span className={styles.mapCardCta}>Open section →</span>
             </Link>
@@ -172,27 +236,49 @@ function OperationalTruths(): ReactNode {
           Operational Truths
         </Heading>
 
+        <p className={styles.sectionLead}>
+          These rules protect the accounting workflow from stale outputs,
+          duplicate logic, and confusing downstream artifacts.
+        </p>
+
         <div className={styles.truths}>
-          <article className={styles.truthCard}>
-            <Heading as="h3">Canonical command surface</Heading>
-            <p>
-              Prefer canonical <code>make</code> targets for operations and automation. This keeps docs, scripts, and incident response aligned.
-            </p>
-          </article>
+          {principles.map((principle) => (
+            <article key={principle.title} className={styles.truthCard}>
+              <Heading as="h3">{principle.title}</Heading>
+              <p>{principle.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
-          <article className={styles.truthCard}>
-            <Heading as="h3">Consumer-safe boundary</Heading>
-            <p>
-              Consumers should read published latest outputs. Use internal output folders for debugging and forensic analysis only.
-            </p>
-          </article>
+function FinalCta(): ReactNode {
+  return (
+    <section className={clsx(styles.section, styles.sectionAlt)}>
+      <div className="container">
+        <Heading as="h2" className={styles.sectionTitle}>
+          Not sure where to go?
+        </Heading>
 
-          <article className={styles.truthCard}>
-            <Heading as="h3">Evidence-driven docs</Heading>
-            <p>
-              Every authority page should include commands validated, code anchors, and known assumptions to reduce drift.
-            </p>
-          </article>
+        <p className={styles.sectionLead}>
+          Start with the operator path. It links to the safest commands,
+          inspection flow, and recovery sequence.
+        </p>
+
+        <div className={styles.heroButtons}>
+          <Link
+            className="button button--primary button--lg"
+            to="/notes/library/operations/operator-start-here">
+            Open Operator Start
+          </Link>
+
+          <Link
+            className="button button--secondary button--lg"
+            to="/notes/output_contracts">
+            Review Output Contracts
+          </Link>
         </div>
       </div>
     </section>
@@ -204,13 +290,15 @@ export default function Home(): ReactNode {
 
   return (
     <Layout
-      title={`${siteConfig.title}`}
-      description="Accounting workflows docs for operations, automation, reporting consumers, and development governance.">
+      title={siteConfig.title}
+      description="Accounting workflows documentation for operations, automation, output contracts, reporting consumers, and development governance.">
       <HomepageHeader />
+
       <main>
         <QuickStartGrid />
         <DocumentationMap />
         <OperationalTruths />
+        <FinalCta />
       </main>
     </Layout>
   );

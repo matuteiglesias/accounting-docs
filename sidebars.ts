@@ -96,6 +96,20 @@ const sidebars: SidebarsConfig = {
 
     {
       type: 'category',
+      label: 'Architecture & Contracts',
+      items: [
+        'current_state_map',
+        'artifact_ladder',
+        'contracts',
+        'output_contracts',
+        'ledger_taxonomy',
+        'metric_registry_contract',
+        'debt_resolver_contract',
+      ],
+    },
+
+    {
+      type: 'category',
       label: 'Governance',
       link: {
         type: 'doc',
@@ -107,20 +121,6 @@ const sidebars: SidebarsConfig = {
         'docs_execution_plan',
         'library/governance/doc-freshness-and-drift-checks',
         'library/governance/evidence-map-template',
-      ],
-    },
-
-    {
-      type: 'category',
-      label: 'Architecture & Contracts',
-      items: [
-        'current_state_map',
-        'artifact_ladder',
-        'contracts',
-        'output_contracts',
-        'ledger_taxonomy',
-        'metric_registry_contract',
-        'debt_resolver_contract',
       ],
     },
 

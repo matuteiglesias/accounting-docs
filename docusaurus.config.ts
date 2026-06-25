@@ -2,6 +2,8 @@ import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import {themes as prismThemes} from 'prism-react-renderer';
 
+const githubUrl = 'https://github.com/matuteiglesias/accounting-docs';
+
 const config: Config = {
   title: 'Accounting Workflows Docs',
   tagline: 'Operations, contracts, automation, and reporting playbooks',
@@ -34,8 +36,7 @@ const config: Config = {
           routeBasePath: 'notes',
           path: 'docs/notes',
           sidebarPath: './sidebars.ts',
-          editUrl:
-            'https://github.com/matuteiglesias/accounting-docs/tree/main/docs/notes/',
+          editUrl: `${githubUrl}/tree/main/docs/notes/`,
           showLastUpdateAuthor: false,
           showLastUpdateTime: false,
         },
@@ -48,10 +49,12 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: 'img/social-card.jpg',
+    image: 'img/docusaurus-social-card.jpg',
+
     colorMode: {
       respectPrefersColorScheme: true,
     },
+
     navbar: {
       title: 'Accounting Workflows',
       items: [
@@ -62,33 +65,102 @@ const config: Config = {
           label: 'Docs',
         },
         {
-          href: 'https://github.com/matuteiglesias/accounting-docs',
+          to: '/notes/output_contracts',
+          label: 'Contracts',
+          position: 'left',
+        },
+        {
+          to: '/notes/library/operations/incidents-first-15-minutes',
+          label: 'Incidents',
+          position: 'left',
+        },
+        {
+          href: githubUrl,
           label: 'GitHub',
           position: 'right',
         },
       ],
     },
+
     footer: {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Start',
           items: [
-            {label: 'Foundations', to: '/notes/library/00-foundations/00-index'},
-            {label: 'Operations', to: '/notes/library/10-operations/10-operator-start-here'},
-            {label: 'Automation', to: '/notes/library/20-automation/20-automation-start-here'},
-            {label: 'Consumers', to: '/notes/library/30-consumers/30-consumer-start-here'},
+            {
+              label: 'Start here',
+              to: '/notes/library/foundations/index',
+            },
+            {
+              label: 'Operator start',
+              to: '/notes/library/operations/operator-start-here',
+            },
+            {
+              label: 'Incident first 15 minutes',
+              to: '/notes/library/operations/incidents-first-15-minutes',
+            },
+          ],
+        },
+        {
+          title: 'Contracts',
+          items: [
+            {
+              label: 'Output contracts',
+              to: '/notes/output_contracts',
+            },
+            {
+              label: 'Ledger taxonomy',
+              to: '/notes/ledger_taxonomy',
+            },
+            {
+              label: 'Debt resolver',
+              to: '/notes/debt_resolver_contract',
+            },
+            {
+              label: 'Metric registry',
+              to: '/notes/metric_registry_contract',
+            },
+          ],
+        },
+        {
+          title: 'Consumers',
+          items: [
+            {
+              label: 'Human reports',
+              to: '/notes/human_report_catalog',
+            },
+            {
+              label: 'Latest outputs',
+              to: '/notes/library/consumers/where-to-find-latest-outputs',
+            },
+            {
+              label: 'Consumer guide',
+              to: '/notes/library/consumers/consumer-start-here',
+            },
           ],
         },
         {
           title: 'Project',
           items: [
-            {label: 'GitHub', href: 'https://github.com/matuteiglesias/accounting-docs'},
+            {
+              label: 'GitHub',
+              href: githubUrl,
+            },
+            {
+              label: 'Development diary',
+              to: '/notes/dev_diary',
+            },
+            {
+              label: 'Docs governance',
+              to: '/notes/docs_frontmatter_contract',
+            },
           ],
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Accounting Workflows`,
     },
+
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
