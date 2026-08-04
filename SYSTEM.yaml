@@ -1,0 +1,41 @@
+# This file declares the repository boundary and its place in the GitHub estate.
+schema_version: 1
+id: acct.docs.site
+repository:
+  id: repo.accounting-docs
+  github: matuteiglesias/accounting-docs
+domain: accounting
+system: acct.docs
+role: public-documentation-site
+lifecycle: active
+authority:
+  status: proposed
+  owns:
+  - published accounting operating guidance and contract documentation
+  - documentation-site structure
+  does_not_own:
+  - ledger data
+  - calculation authority
+  - runtime success
+interfaces:
+  consumes:
+  - artifact:acct.docs-input@1
+  produces:
+  - publication:acct.docs@1
+upstream:
+- repo.accounting-workflows
+downstream: []
+canonical_commands:
+- yarn start
+- yarn build
+generated_paths:
+- build/
+verification:
+  status: metadata-only
+  last_verified: '2026-08-04'
+  command: null
+  unknowns:
+  - deployment freshness requires explicit verification
+maintenance:
+  cadence: quarterly
+  next_review: '2026-11-01'
