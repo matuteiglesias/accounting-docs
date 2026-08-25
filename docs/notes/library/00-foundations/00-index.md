@@ -14,11 +14,11 @@ Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7
 
 ## Start with current truth
 
-- [Current state map](../../current_state_map.md)
-- [Doc map by role](./01-doc-map-by-role.md)
-- [Glossary](./02-glossary.md)
-- [Pipeline abstractions](./03-pipeline-abstractions.md)
-- [Governed-spine truth baseline](../90-governance/92-governed-spine-truth-baseline.md)
+- [Current state map](/notes/current_state_map)
+- [Doc map by role](/notes/library/foundations/doc-map-by-role)
+- [Glossary](/notes/library/foundations/glossary)
+- [Pipeline abstractions](/notes/library/foundations/pipeline-abstractions)
+- [Governed-spine truth baseline](/notes/library/governance/governed-spine-truth-baseline)
 
 ## Repository boundaries
 

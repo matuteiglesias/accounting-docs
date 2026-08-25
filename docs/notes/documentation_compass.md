@@ -24,8 +24,8 @@ Until those waves land, a downstream page may still contain historical architect
 
 Read first:
 
-1. [Current state map](./current_state_map.md)
-2. [Backend truth baseline](./library/90-governance/92-governed-spine-truth-baseline.md)
+1. [Current state map](/notes/current_state_map)
+2. [Backend truth baseline](/notes/library/governance/governed-spine-truth-baseline)
 3. `notes/accounting_spine_runbook.md` and `notes/canonical_commands.md` only with the understanding that their dedicated command-surface refresh is the next wave.
 
 For current command names, check the upstream Makefile before live or consequential execution.
@@ -35,8 +35,8 @@ For current command names, check the upstream Makefile before live or consequent
 Read first:
 
 1. root `AGENTS.md`
-2. [Current state map](./current_state_map.md)
-3. [Autonomous documentation PR protocol](./library/90-governance/94-autonomous-doc-pr-protocol.md)
+2. [Current state map](/notes/current_state_map)
+3. [Autonomous documentation PR protocol](/notes/library/governance/autonomous-doc-pr-protocol)
 4. the current upstream authority relevant to the change
 
 Do not preserve a retired layer merely because an older document or filename mentions it.
@@ -45,8 +45,8 @@ Do not preserve a retired layer merely because an older document or filename men
 
 Read first:
 
-1. [Current state map](./current_state_map.md)
-2. [Foundations](./library/00-foundations/00-index.md)
+1. [Current state map](/notes/current_state_map)
+2. [Foundations](/notes/library/foundations/index)
 3. consumer pages under `library/30-consumers/` with caution until the consumer/professional refresh wave is merged
 
 Accounting labels are reporting classifications. They do not establish legal ownership, rights, enforceability, or family-governance conclusions.
@@ -55,7 +55,7 @@ Accounting labels are reporting classifications. They do not establish legal own
 
 Read first:
 
-1. [Backend truth baseline](./library/90-governance/92-governed-spine-truth-baseline.md)
+1. [Backend truth baseline](/notes/library/governance/governed-spine-truth-baseline)
 2. the current upstream Makefile
 3. automation pages under `library/20-automation/` only with the explicit concurrency limitation in mind
 
@@ -79,8 +79,8 @@ Generic `accounting.views` / `run-marts`, the parallel `metric_values` engine, a
 
 The current execution authority for documentation work is:
 
-- [Governed-spine truth baseline](./library/90-governance/92-governed-spine-truth-baseline.md)
-- [Governed-spine documentation refresh program](./library/90-governance/93-governed-spine-docs-refresh-program.md)
-- [Autonomous documentation PR protocol](./library/90-governance/94-autonomous-doc-pr-protocol.md)
+- [Governed-spine truth baseline](/notes/library/governance/governed-spine-truth-baseline)
+- [Governed-spine documentation refresh program](/notes/library/governance/governed-spine-docs-refresh-program)
+- [Autonomous documentation PR protocol](/notes/library/governance/autonomous-doc-pr-protocol)
 
 The older `docs_execution_plan.md` is retained as a route-preserving historical planning record and is no longer the active sequence.

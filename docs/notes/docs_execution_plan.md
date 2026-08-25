@@ -22,9 +22,9 @@ The old plan assumed architecture and consumer surfaces that have since changed,
 
 Use these documents instead:
 
-1. [Governed Spine Truth Baseline](./library/90-governance/92-governed-spine-truth-baseline.md)
-2. [Governed Spine Documentation Refresh Program](./library/90-governance/93-governed-spine-docs-refresh-program.md)
-3. [Autonomous Documentation PR Protocol](./library/90-governance/94-autonomous-doc-pr-protocol.md)
+1. [Governed Spine Truth Baseline](/notes/library/governance/governed-spine-truth-baseline)
+2. [Governed Spine Documentation Refresh Program](/notes/library/governance/governed-spine-docs-refresh-program)
+3. [Autonomous Documentation PR Protocol](/notes/library/governance/autonomous-doc-pr-protocol)
 
 The active sequence is:
 
