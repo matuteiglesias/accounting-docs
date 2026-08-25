@@ -8,7 +8,7 @@ doc_type: "guide"
 
 # Accounting documentation
 
-Status: current architecture entrypoint  
+Status: current architecture and operations entrypoint  
 Last reviewed: 2026-08-25  
 Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
@@ -31,10 +31,13 @@ The current executable backend does **not** use a generic views stage, a paralle
 
 - [Current state map](/notes/current_state_map) — current architecture, authority boundaries, and retired layers.
 - [Foundations](/notes/library/foundations/index) — shared vocabulary and role-based navigation.
+- [Operator start](/notes/library/operations/operator-start-here) — safe validation, live/existing-run distinctions, and incident entrypoint.
+- [Accounting spine runbook](/notes/accounting_spine_runbook) — current governed operator path.
+- [Canonical commands](/notes/canonical_commands) — current Makefile command classes.
 - [Governed-spine truth baseline](/notes/library/governance/governed-spine-truth-baseline) — evidence baseline for the refresh.
 - [Refresh program](/notes/library/governance/governed-spine-docs-refresh-program) — sequential migration waves.
 
-Operator, artifact-contract, consumer, and automation guidance is being refreshed in later bounded waves. If one of those pages conflicts with current `accounting-workflows` executable contracts or tests, upstream executable authority wins and the documentation should be repaired rather than the retired behavior restored.
+Architecture/foundations and operator guidance are now refreshed against the checked upstream commit. Artifact-contract, consumer/professional, automation, and historical-cleanup guidance remain later bounded waves. If an older page conflicts with current `accounting-workflows` executable contracts or tests, upstream executable authority wins and the documentation should be repaired rather than the retired behavior restored.
 
 ## Repository boundaries
 
@@ -46,4 +49,4 @@ Accounting classifications documented here do not determine legal ownership, rig
 
 ## Verification boundary
 
-This page records source-level architecture verification against the upstream commit above. It does not assert that a live accounting run, latest pointer, deployed site, or private source dataset is fresh or successful.
+This page records source-level architecture/operations verification against the upstream commit above. It does not assert that a live accounting run, latest pointer, deployed site, or private source dataset is fresh or successful.
