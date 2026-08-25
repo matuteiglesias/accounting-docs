@@ -8,9 +8,10 @@ doc_type: "guide"
 
 # Accounting documentation
 
-Status: current architecture, operations, and contracts entrypoint  
+Status: current architecture, operations, contracts, and consumer entrypoint  
 Last reviewed: 2026-08-25  
-Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
+Accounting truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`  
+Viewer boundary checked: `accounting-viewer@9d2dfabe3227195f7910ae362bcaaedd6c509529`
 
 This site explains how to operate, understand, and consume the accounting system. It does not own ledger data, accounting calculations, source documents, viewer implementation, or live runtime truth.
 
@@ -38,19 +39,21 @@ The current executable backend does **not** use a generic views stage, a paralle
 - [Metric contract](/notes/metric_registry_contract) — route-preserving current governed frontier contract.
 - [Debt resolver contract](/notes/debt_resolver_contract) — engine evidence versus canonical debt stock/activity.
 - [Public bundle contract](/notes/frontend_snapshot_contract) — scope-qualified `accounting_public_bundle.v1` packaging boundary.
+- [Consumer start](/notes/library/consumers/consumer-start-here) — governed consumer paths and interpretation guardrails.
+- [Human report catalog](/notes/human_report_catalog) — professional/reporting families, drilldown rules, and semantic boundaries.
 - [Governed-spine truth baseline](/notes/library/governance/governed-spine-truth-baseline) — evidence baseline for the refresh.
 - [Refresh program](/notes/library/governance/governed-spine-docs-refresh-program) — sequential migration waves.
 
-Architecture/foundations, operator guidance, and artifact/contract authority are now refreshed against the checked upstream commit. Consumer/professional semantics, automation/recovery, and historical-cleanup guidance remain later bounded waves. If an older page conflicts with current `accounting-workflows` executable contracts or tests, upstream executable authority wins and the documentation should be repaired rather than retired behavior restored.
+Architecture/foundations, operator guidance, artifact/contract authority, and consumer/professional semantics are now refreshed against the checked upstream authorities. Automation/recovery and historical/IA cleanup remain later bounded waves. If an older page conflicts with current executable contracts or tests, upstream executable authority wins and the documentation should be repaired rather than retired behavior restored.
 
 ## Repository boundaries
 
 - `accounting-workflows`: canonical transformations, accounting rules, governed reporting calculations, publication generation, professional packs, and drilldowns.
-- `accounting-viewer`: viewer-specific presentation over approved packaged outputs.
-- `accounting-docs`: public operating guidance, architecture and contract explanation, and this Docusaurus site.
+- `accounting-viewer`: viewer-specific read-only presentation over packaged outputs. Its current loader still reflects an older package-path convention, so viewer availability is not proof of current governed-bundle freshness.
+- `accounting-docs`: public operating guidance, architecture/contract/consumer explanation, and this Docusaurus site.
 
 Accounting classifications documented here do not determine legal ownership, rights, enforceability, family governance, or negotiation positions.
 
 ## Verification boundary
 
-This page records source-level architecture/operations/contracts verification against the upstream commit above. It does not assert that a live accounting run, latest pointer, deployed site, or private source dataset is fresh or successful.
+This page records source-level architecture/operations/contracts/consumer verification against the upstream commits above. It does not assert that a live accounting run, latest pointer, deployed site, professional pack, or private source dataset is fresh or successful.

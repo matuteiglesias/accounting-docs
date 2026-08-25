@@ -2,154 +2,129 @@
 title: "Human Report Catalog"
 sidebar_label: "Human reports"
 sidebar_position: 21
-description: "Catalog of human-facing accounting reports, their audiences, source tables, questions answered, and interpretation boundaries."
+description: "Catalog of current governed human-facing accounting surfaces, their source authority, drilldown path, and interpretation boundaries."
 doc_type: "reference"
 ---
 
 # Human Report Catalog
 
-This document catalogs human-facing accounting outputs.
-
-The human reporting layer should help people understand the accounting system without forcing them to inspect raw ledger rows or metric internals.
-
-Human reports should not invent accounting logic. They should consume canonical metrics, approved views, debt outputs, and data-quality artifacts.
+Status: current consumer/professional reporting guide  
+Last reviewed: 2026-08-25  
+Accounting truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`  
+Viewer boundary checked: `accounting-viewer@9d2dfabe3227195f7910ae362bcaaedd6c509529`
 
 ## Purpose
 
-This catalog should answer:
+Human-facing reporting is a **projection of governed accounting facts**, not a second accounting engine.
 
-* Which human reports exist?
-* Who is each report for?
-* What question does each report answer?
-* Which source table or metric supports it?
-* What should not be inferred from it?
-* Which reports are front-stage versus support/audit?
+`accounting-workflows` owns the accounting calculations, professional tables, lineage, drilldowns, and publication packaging. `accounting-viewer` is a private read-only review application. This documentation explains how to read those surfaces; it does not establish live freshness or legal meaning.
 
-## Report families
+## Current reporting families
 
-| Report family     | Purpose                                              |
-| ----------------- | ---------------------------------------------------- |
-| Executive summary | Small set of numbers and claims for decision-making  |
-| Cash snapshot     | Current liquidity and cash position                  |
-| Income statement  | Rent, costs, operating result                        |
-| Rent rollups      | Rent by property, detail, tenant, or period          |
-| Flow/type rollups | Categorized inflows and outflows                     |
-| Internal debt     | Open balances, repayments, and debt resolution       |
-| Household         | Contributions, payments, fairness, and family burden |
-| Data quality      | Missing fields, stale statuses, ambiguous rows       |
-| Audit drilldowns  | Rows behind a number                                 |
-| Narrative package | Tables plus message for a stakeholder                |
+| Family | Current governed surface | Source authority | Consumer question |
+|---|---|---|---|
+| Overview | `overview_balance_dashboard` | governed frontier / annual dashboard plus typed debt, cash and derived authorities | What is the high-level accounting position? |
+| Operating statement | `income_operating_statement`, monthly operating-statement matrices | `monthly_operating_statement.csv`, governed annual flow lineage | What operating revenue, true property OPEX, funding and draws occurred? |
+| Validated cash | `monthly_tables_cash_close_matrix`, `annual_cash_close_by_box_wide` | `monthly_cash_close.csv` through validated-cash selection | What validated account cash can actually be stated? |
+| Debt stock | `monthly_tables_debt_position_matrix`, `annual_debt_stock_by_pair_wide` | `monthly_debt_position.csv` | What debt remains open at the selected close? |
+| Debt activity | `monthly_tables_debt_activity_matrix`, `annual_debt_activity_by_pair_wide` | `monthly_debt_activity.csv` | What debt movements occurred during the period? |
+| Funding/support | funding lines in overview/operating/bridge tables and `annual_funding_by_actor_channel_wide` | semantic funding contribution plus typed broader support contract where explicitly used | What core funding or broader governed support occurred? |
+| Draws / distributions | governed atomic-flow rows and annual lineage | family-withdrawal/distribution semantic rows | What personal/family withdrawal-like outflows were classified? |
+| Property OPEX detail | governed atomic OPEX rows | `monthly_flow_semantic_split.csv` + semantic measure authority | Which property expenses support OPEX totals? |
+| Treasury FX | FX tables and FX rows in the annual cash bridge | single FX measure/grain authority over treasury-FX semantic rows | What currency-conversion movement/cost is represented? |
+| Linked evidence | professional drilldowns and linked digest | governed cell identity, lineage and source rows | Which governed members reconcile to the displayed cell? |
 
-## Known reports and tables
+Table IDs are presentation identities, not accounting authority by themselves. A current row is governed only when its producer metadata, source schema and executor satisfy the current contract.
 
-| Artifact                         | Family                | Audience                   | Question answered                             | Source                          |
-| -------------------------------- | --------------------- | -------------------------- | --------------------------------------------- | ------------------------------- |
-| `balance_humano_v2`              | Executive / narrative | Family, Matías, reviewer   | What is the overall human-readable state?     | Human factory + metrics/views   |
-| `cash_snapshot`                  | Cash                  | Operator, family, reviewer | How much cash or liquidity exists now?        | Cash metric/view                |
-| `income_statement_monthly_last6` | Income statement      | Operator, family           | What happened in recent months?               | Metrics / income statement view |
-| `rent_rollup_by_place_m_last6`   | Rent                  | Family, reviewer           | Which places produced rent recently?          | Rent rollup view                |
-| `rent_rollup_by_detail_m_last6`  | Rent detail           | Operator, audit            | Which detailed rent lines support the rollup? | Ledger/view drilldown           |
-| `flow_type_rollup_m_last6`       | Flow/type             | Operator, reviewer         | What categories explain inflows/outflows?     | Ledger/view aggregation         |
-| `data_quality`                   | QA                    | Operator, developer, agent | What rows or contracts need attention?        | Validation outputs              |
-| `debt_summary`                   | Internal debt         | Family, reviewer           | Who still owes what and what was repaid?      | Debt resolver outputs           |
-| `debt_open_items`                | Internal debt         | Operator, audit            | Which obligations remain open?                | Debt resolver                   |
-| `debt_allocations`               | Internal debt         | Operator, audit            | Which repayments closed which items?          | Debt resolver                   |
-| `household_contributions`        | Household             | Siblings/family            | Who contributed what?                         | Ledger filters/views            |
-| `household_payments`             | Household             | Siblings/family            | What was actually paid for household costs?   | Ledger filters/views            |
+## What is not a current headline report authority
 
-Names may differ in the current artifact tree. This catalog defines the reporting intent.
+Do **not** treat the following as current human-report truth:
 
-## Front-stage vs support
+- `balance_humano_v2` / `accounting.human.*` as a calculation layer;
+- legacy `metric_views/*`, `metric_values.csv`, or `metric_registry.csv`;
+- `daily_cash_position.csv` or inferred Box balances as validated cash;
+- raw `debt_open_items.csv` or repayment rows as the report-safe debt stock contract;
+- generic flow/bridge/unknown-review matrices merely because a drilldown route exists;
+- an old checked-in viewer package merely because the Flask application serves it successfully.
 
-### Front-stage reports
+Diagnostic evidence remains useful for audit, but it does not automatically belong on the front stage.
 
-Front-stage reports are safe to show in a meeting or narrative package.
+## Interpretation invariants
 
-They should be:
+### Property OPEX versus Household/personal outflows
 
-* small;
-* labeled clearly;
-* tied to a specific question;
-* free from raw technical jargon;
-* supported by drilldowns if challenged.
+Property OPEX is the governed `property_opex` semantic population. Personal expenses, family withdrawals/distributions, funding, debt movements, transfers, treasury FX and unknown/review-required rows are separate populations. Household/personal classification must not leak into property OPEX.
 
-Examples:
+### Operating revenue versus funding
 
-* cash snapshot;
-* last 6 months income statement;
-* rent by place;
-* internal debt summary;
-* household contribution summary.
+Operating revenue and funding are separate accounting categories. Core funding is the `funding_contribution` semantic bucket and is **not operating revenue**.
 
-### Support reports
+Some annual/professional surfaces deliberately expose a broader support contract. That broader contract has three governed kinds: core contribution, direct obligation payment, and debt-linked support. Broader support does not redefine every support-like event as core funding.
 
-Support reports are for audit, QA, or debugging.
+### Draws / distributions
 
-They can be wider and more technical.
+Draws and distribution-like outflows are not property OPEX. A reporting classification such as personal draw, family withdrawal, or distribution does **not** by itself establish a legal entitlement, ownership share, breach, reimbursement right, or negotiation position.
 
-Examples:
+### Validated cash
 
-* raw debt allocations;
-* data-quality warnings;
-* detailed rent lines;
-* transaction-level drilldowns;
-* status reconciliation.
+Cash headlines use explicitly validated account snapshots only. Inferred Box-control rows and internal party balances are excluded and are never fallback cash. If the validated schema or required identity is unavailable, the correct result is unavailable/unsupported rather than a substituted balance.
 
-## Required metadata per report
+### Debt stock versus debt activity
 
-Every report should eventually have:
+Debt position is a stock. Monthly position selects the governed closing observation; annual debt stock selects the latest governed period and latest valid as-of observation in that period. Monthly stock values are never summed to create annual debt.
 
-| Field                   | Meaning                            |
-| ----------------------- | ---------------------------------- |
-| Report name             | Stable artifact/report label       |
-| Audience                | Who can use it                     |
-| Main question           | What it answers                    |
-| Source                  | Metric/view/debt artifact          |
-| Grain                   | monthly, yearly, latest, row-level |
-| Refresh mode            | live, manual, historical           |
-| Interpretation boundary | What not to claim from it          |
-| Drilldown path          | How to verify the number           |
-| Status                  | active, draft, legacy, deprecated  |
+Debt activity is a flow. Governed monthly activity rows are additive; annual activity is the sum of governed monthly activity for the year.
 
-This does not need to be encoded in Docusaurus frontmatter. It can live in a table or registry.
+Neither accounting debt classification nor resolver output establishes legal enforceability without separate documentary/legal analysis.
 
-## Report interpretation rules
+### Native currency
 
-1. A human report is not the source of truth.
-2. A human report should cite or point to the source artifact.
-3. If a number comes from metrics, it should match `metric_values`.
-4. If a number comes from debt, it should match debt resolver outputs.
-5. If a number comes from ledger filters, the filter should be reproducible.
-6. A report can simplify language but not change accounting semantics.
-7. A report should expose data quality warnings when they affect interpretation.
+Money remains in explicit native `Currency` grain unless a separate governed conversion contract says otherwise. Missing currency is a fail-closed condition for governed professional flow, debt and FX execution. Do not silently sum ARS and USD.
 
-## Stakeholder packages
+### Annual lineage
 
-Potential packages:
+Annual additive-flow cells consume `annual_flow_membership.csv`. Professional reporting does not reclassify monthly semantic rows to manufacture annual membership. Missing, ambiguous or incompatible governed lineage is unsupported.
 
-| Package            | Contents                                                               |
-| ------------------ | ---------------------------------------------------------------------- |
-| Father meeting     | Executive summary, rent/cost view, debt summary, minimum asks          |
-| Siblings meeting   | Household contributions, payments, fairness by thirds, next decisions  |
-| Cousins discussion | Property-level rent/cost, administrator accountability, open questions |
-| Lawyer packet      | Ledger taxonomy, debt contract, chronology, evidence drilldowns        |
-| Operator review    | Data quality, latest run, output contracts, metric validation          |
-| Agent handoff      | Module inventory, contracts, dev diary, frontmatter contract           |
+### Unknown / review-required
 
-## Known risks
+Ambiguous semantic rows remain visible as unknown/review-required. They are not forced into OPEX, funding, draws or another convenient line simply to make a report balance.
 
-| Risk                           | Consequence                                         |
-| ------------------------------ | --------------------------------------------------- |
-| Too many tables                | Humans lose the message                             |
-| Report recomputes ledger logic | Numbers drift from canonical metrics                |
-| No drilldown                   | Claims become hard to defend                        |
-| Mixed audiences                | Technical report becomes unusable in family meeting |
-| Data-quality warnings hidden   | Bad rows propagate into narrative                   |
+### FX drilldowns
+
+FX rows require an explicit recognized measure (`amount_in`, `amount_out`, `net_amount`, or `amount_abs`) and explicit currency-total or Box × Currency grain. Ambiguous measure, missing currency, missing required Box, or conflicting metadata fails closed.
+
+## Drilldown reading rule
+
+A professional cell is trustworthy only when the displayed value and its governed membership reconcile within the applicable tolerance.
+
+A drilldown should show enough evidence to answer:
+
+- which contract/executor was used;
+- period/year and native currency;
+- required dimensions such as Box, actor, category, debtor/creditor or FX grain;
+- governed source artifact;
+- selected/matched members;
+- residual between matched and displayed value;
+- caveat or unsupported reason.
+
+`residual_warning`, `unsupported`, `unavailable`, or missing-source states are evidence to investigate. They are not permission to widen filters or invent fallback membership.
+
+## Viewer boundary and current integration gap
+
+`accounting-viewer` is explicitly read-only and does not own accounting calculations or freshness. Its repository governance declares consumption of the professional pack/drilldowns, but its current loader still hardcodes older checked-in package roots (`accounting_surface/data/` and `public/accounting/latest/`).
+
+The current upstream publisher, by contrast, produces scope-qualified governed bundles under `public/accounting/latest_<SCOPE_TAG>/` with `accounting_public_bundle.v1`.
+
+Treat that as an **integration gap**, not as evidence that either side may silently reinterpret the other. Until viewer packaging is reconciled, verify the viewer bundle manifest/run/cutoff independently and do not use viewer availability as proof that the current governed publication was loaded.
+
+## Legal and governance boundary
+
+These reports are accounting evidence. They can support factual questions about recorded rents, OPEX, funding, draws, cash, debt activity, and drilldown membership. They do not by themselves determine ownership, inheritance rights, administrator duties, enforceability, fairness, family allocations, or legal remedies.
 
 ## Related docs
 
-* `/notes/ledger_taxonomy`
-* `/notes/metric_registry_contract`
-* `/notes/debt_resolver_contract`
-* `/notes/output_contracts`
-* `/notes/narrative`
+- [Output contracts](/notes/output_contracts)
+- [Governed metric contract](/notes/metric_registry_contract)
+- [Debt contract](/notes/debt_resolver_contract)
+- [Published bundle contract](/notes/frontend_snapshot_contract)
+- [Consumer start](/notes/library/consumers/consumer-start-here)
