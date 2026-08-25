@@ -1,14 +1,32 @@
 graph LR
-  ingest[ledger/ingest.py] --> manifest[artifacts/manifest.py]
-  ingest --> core[core/timeseries.py]
-  ingest --> support[support/*]
-  materialize[stage_d/materialize.py] --> core
-  materialize --> manifest
-  materialize --> support
-  reports[human/reports.py] --> views[views.py]
-  views --> core
-  views --> support
-  views --> manifest
-  storypack[storypack.py] --> reports
-  models[contracts/models.py] --> ingest
-  config[config.py] --> ingest
+  ingest[ledger/ingest.py] --> materialize[stage_d/materialize.py]
+  materialize --> semantic[marts/semantic.py]
+  materialize --> cash[cash authority / projection]
+  ingest --> debtresolve[debt/resolve.py]
+  debtresolve --> debtbalances[debt/balance_views.py]
+  debtbalances --> debtmart[marts/debt.py]
+  debtmart --> treasury[marts/treasury.py]
+
+  semantic --> frontier[metrics/frontier.py]
+  cash --> frontier
+  debtmart --> frontier
+  frontier --> annual[metrics/annual.py]
+  frontier --> metricsbuild[metrics/build.py]
+  annual --> metricsbuild
+
+  artifactmeta[artifacts/manifest.py] --> metricsbuild
+  artifactmeta --> publish[publish/latest.py]
+  metricsbuild --> publish
+  debtmart --> publish
+
+  contracts[contracts/*] --> semantic
+  contracts --> cash
+  contracts --> debtmart
+  contracts --> frontier
+  contracts --> annual
+  contracts --> professional[professional/*]
+
+  metricsbuild --> professional
+  annual --> professional
+
+  retired[retired: generic views / metric_values / accounting.human authority] -. not current authority .-> publish

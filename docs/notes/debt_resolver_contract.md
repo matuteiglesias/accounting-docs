@@ -2,218 +2,123 @@
 title: "Debt Resolver Contract"
 sidebar_label: "Debt resolver"
 sidebar_position: 19
-description: "Contract for internal debt open items, interest, repayments, chronological allocation, outputs, and QA expectations."
+description: "Defines the current debt-engine evidence boundary and canonical debt stock/activity handoff."
 doc_type: "contract"
 ---
 
 # Debt Resolver Contract
 
-This document defines the expected behavior of the internal debt resolver.
-
-The debt resolver is a business-rule engine. It should not be treated as a display helper. It converts ledger debt events into auditable open items, repayment allocations, balances, and human-facing debt summaries.
+Status: current contract reference  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
 ## Purpose
 
-The debt resolver should answer:
+Debt handling has two distinct layers:
 
-- Which internal debts exist?
-- Which items are still open?
-- Which repayments closed which items?
-- How much principal remains?
-- How much interest remains?
-- Which party or pocket is exposed?
-- Which balances can be shown to humans?
-- Which rows need QA because chronology or classification is suspicious?
+1. debt-engine evidence that resolves obligations/repayments and preserves auditability;
+2. canonical monthly debt position/activity facts used by metrics, annual reporting, publication, and professional presentation.
 
-## Core concepts
+Do not treat raw debt-engine tables as the final report contract.
 
-### Open item
+## Input boundary
 
-An open item is an obligation that can be repaid or resolved later.
-
-Examples:
-
-- principal loan;
-- accrued interest;
-- unpaid reimbursement;
-- recognized internal debt ticket;
-- family/PM obligation created by a prior payment.
-
-Minimum fields:
-
-| Field | Meaning |
-|---|---|
-| `open_item_id` | Stable identifier for the obligation |
-| `opened_at` | Date the obligation becomes eligible for repayment |
-| `debt_family` | Family/group to which the obligation belongs |
-| `debtor_party` | Who owes |
-| `creditor_party` | Who is owed |
-| `currency` | Currency of the claim |
-| `principal_amount` | Principal amount, if applicable |
-| `interest_amount` | Interest amount, if applicable |
-| `remaining_amount` | Unresolved balance |
-| `source_transaction_id` | Ledger source |
-
-### Repayment
-
-A repayment is a debt-resolution event that can cancel one or more open items.
-
-Minimum fields:
-
-| Field | Meaning |
-|---|---|
-| `repayment_id` | Stable repayment event identifier |
-| `repayment_date` | Date the repayment becomes available |
-| `debt_family` | Eligible debt family |
-| `payer_party` | Who paid |
-| `receiver_party` | Who received |
-| `currency` | Currency of repayment |
-| `amount` | Amount available to allocate |
-| `source_transaction_id` | Ledger source |
-
-### Allocation
-
-An allocation links a repayment to one open item.
-
-Minimum fields:
-
-| Field | Meaning |
-|---|---|
-| `repayment_id` | Repayment source |
-| `open_item_id` | Item being resolved |
-| `allocated_amount` | Amount applied |
-| `allocation_date` | Repayment date |
-| `allocation_rule` | Rule used, for example FIFO |
-| `remaining_after` | Open item balance after allocation |
-
-## Resolution rules
-
-### Rule 1: Chronology
-
-A repayment can only resolve an item that already exists.
+The Makefile supplies the resolver with:
 
 ```text
-open_item.opened_at <= repayment.repayment_date
+out/run/accounting/<RUN_ID>/ledger_canonical_all_status.csv
 ```
 
-A repayment must never close future debt.
+This is scoped normalized all-status evidence. It exists so debt resolution is not accidentally limited to a paid-only reporting population.
 
-This rule is mandatory.
+Runtime parameters currently include selected currencies, repayment statuses, and a `full-only` mode. Exact eligibility/allocation semantics remain executable authority in `accounting.debt.resolve` and its regression tests; this page does not invent additional debt families or allocation rules.
 
-### Rule 2: Debt family
+## Debt-engine evidence
 
-A repayment should only apply to open items in the same `debt_family`, unless a documented cross-family rule exists.
+Current resolver outputs under `out/debt_resolution/<RUN_ID>/` include:
 
-No implicit cross-family allocation.
+```text
+debt_open_items.csv
+debt_allocations.csv
+debt_repayment_events.csv
+debt_resolution_timeline.csv
+debt_status_reconciliation.csv
+```
 
-### Rule 3: Currency
+`accounting.debt.balance_views` additionally emits:
 
-A repayment should only apply to open items in the same currency unless a documented FX conversion rule exists.
+```text
+debt_balance_daily.csv
+debt_balance_monthly.csv
+debt_balance_quarterly.csv
+debt_balance_yearly.csv
+```
 
-If a conversion exists, the conversion rate and source must be recorded.
+These files support audit, reconciliation, chronology, and construction of canonical debt facts. Artifact metadata classifies raw open-item/repayment/status-reconciliation evidence as internal/diagnostic rather than dashboard truth.
 
-### Rule 4: FIFO default
+## Canonical debt facts
 
-The default allocation rule is FIFO among eligible open items:
+`accounting.marts.debt` produces in the canonical run root:
 
-1. same debt family;
-2. same currency;
-3. opened on or before repayment date;
-4. oldest open item first.
+```text
+monthly_debt_position.csv
+monthly_debt_position_qa.csv
+monthly_debt_activity.csv
+monthly_debt_activity_qa.csv
+```
 
-### Rule 5: Principal and interest ordering
+These are the downstream debt authorities.
 
-The current simple contract can use a strict full-item FIFO rule.
+### Position
 
-Recommended conservative default:
+`monthly_debt_position.csv` is a stock contract. It represents closing debt position at governed period-close grain.
 
-* do not partially close principal while interest for that same item remains unresolved, unless explicitly supported;
-* do not hide interest;
-* if partial allocation is implemented, allocation records must make the remaining balance visible.
+Consequences:
 
-### Rule 6: No silent skips
+- annual debt stock selects the latest valid closing position;
+- monthly positions must not be summed into annual debt;
+- missing/invalid position grain must fail visibly rather than degrade into an additive flow interpretation.
 
-If a repayment cannot be allocated, the output should record it as unallocated or partially allocated.
+### Activity
 
-Skipped repayments are data quality signals, not harmless noise.
+`monthly_debt_activity.csv` is a flow contract for debt movement. It is the additive debt activity source for metric/annual reporting.
 
-## Expected outputs
+Position and activity cannot substitute for each other merely because both are denominated in money.
 
-The resolver should produce at least:
+## Treasury cross-check
 
-| Output                           | Purpose                                                   |
-| -------------------------------- | --------------------------------------------------------- |
-| `debt_open_items.csv`            | Current and historical obligations with remaining balance |
-| `debt_repayment_events.csv`      | Repayment events available for allocation                 |
-| `debt_allocations.csv`           | Which repayments resolved which open items                |
-| `debt_resolution_timeline.csv`   | Chronological story of opening and closing debt           |
-| `debt_status_reconciliation.csv` | QA comparison between ledger status and resolver status   |
-| `debt_balance_daily.csv`         | Optional daily debt balances                              |
-| `debt_balance_monthly.csv`       | Optional monthly debt balances                            |
-| `debt_balance_yearly.csv`        | Optional yearly debt balances                             |
+The debt stage is followed by treasury/accountability materialization, including `monthly_cash_accountability.csv` plus QA. This cross-check does not turn debt activity into cash or validated cash into debt; each authority keeps its own grain and role.
 
-Exact paths are defined in output contracts.
+## Currency
 
-## Required QA checks
+Debt facts are by currency. No implicit cross-currency allocation or aggregation should be inferred from documentation. Any valuation/conversion requires an explicit governed valuation layer with rate/policy/provenance.
 
-| Check                                         | Severity                                |
-| --------------------------------------------- | --------------------------------------- |
-| Repayment allocated to future open item       | hard error                              |
-| Negative remaining amount                     | hard error                              |
-| Allocation exceeds repayment amount           | hard error                              |
-| Allocation exceeds open item remaining amount | hard error                              |
-| Missing `debt_family` on debt row             | warning or hard error depending on mode |
-| Missing currency                              | hard error for mixed-currency data      |
-| Unallocated repayment                         | warning                                 |
-| Open item with impossible date                | hard error                              |
-| Duplicate open item ID                        | hard error                              |
-| Duplicate repayment ID                        | hard error                              |
+## Status reconciliation
 
-## Minimal QA fixtures
+`debt_status_reconciliation.csv` is QA/evidence comparing ledger-facing and engine-facing debt state. A discrepancy is information to investigate; downstream presentation must not silently rewrite the canonical ledger to make the states agree.
 
-The resolver should have small fixtures for:
+## Publication boundary
 
-1. one principal, one full repayment;
-2. one principal, partial repayment;
-3. multiple principals, one repayment, FIFO allocation;
-4. repayment before debt opening, must not allocate;
-5. two debt families, repayment must not cross family;
-6. principal plus interest;
-7. unallocated repayment;
-8. closed item still present in ledger;
-9. open item excluded by `status=pagado`, must be included in debt mode;
-10. mixed currencies, no silent conversion.
+The publisher deliberately treats raw `debt_open_items.csv` and `debt_repayment_events.csv` as `unsafe_for_frontend` evidence. Report-safe debt stock/activity is published through the canonical monthly wrappers.
 
-## Known implementation risks
+This separation protects privacy/detail boundaries and prevents raw engine internals from being mistaken for headline accounting facts.
 
-| Risk                              | Consequence                                       |
-| --------------------------------- | ------------------------------------------------- |
-| Loading only `status=pagado`      | Open debt inventory disappears.                   |
-| Ignoring chronology               | Repayments close future debts.                    |
-| Weak `debt_family`                | Repayments resolve unrelated obligations.         |
-| Silent partial allocation         | Human balances become hard to audit.              |
-| Recomputing debt in human reports | Human report numbers drift from resolver outputs. |
+## Required invariants
 
-## Contract boundary
+- required all-status debt evidence is not lost through paid-only filtering;
+- native currency remains explicit;
+- stock and activity remain distinct;
+- canonical monthly wrappers reconcile to debt-engine evidence;
+- annual stock uses closing-position semantics;
+- raw debt diagnostics are not promoted to frontend fact;
+- changes to debt meaning require fixture/regression evidence and downstream reconciliation.
 
-The resolver may:
+## Accounting/legal boundary
 
-* consume canonical ledger debt rows;
-* create debt-specific outputs;
-* compute allocations;
-* compute debt balances.
-
-The resolver should not:
-
-* mutate canonical ledger state directly;
-* rewrite source ledger statuses silently;
-* decide human narrative;
-* publish latest artifacts by itself;
-* replace metrics registry.
+A debt artifact records the accounting system's governed debt interpretation. It does not by itself establish legal enforceability, ownership, limitation periods, inheritance rights, or a negotiation position.
 
 ## Related docs
 
-* `/notes/ledger_taxonomy`
-* `/notes/output_contracts`
-* `/notes/metric_registry_contract`
-* `/notes/human_report_catalog`
+- `/notes/ledger_taxonomy`
+- `/notes/output_contracts`
+- `/notes/metric_registry_contract`
