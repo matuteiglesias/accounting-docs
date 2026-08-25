@@ -2,36 +2,53 @@
 title: "Pipeline Abstractions"
 sidebar_label: "Pipeline abstractions"
 sidebar_position: 3
-description: "Explains the main abstractions used across the accounting pipeline and artifact lifecycle."
+description: "Explains the current governed accounting pipeline abstractions and repository boundaries."
 doc_type: "reference"
 ---
 
+# Pipeline abstractions
 
-# 03 pipeline abstractions
-
-Status: draft (code-anchored)
-Last reviewed: 2026-05-22
+Status: current architecture foundation  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
 ## Layer model
 
-1. Source inputs
-2. Canonical ledger
-3. Stage D materialized artifacts
-4. Views/debt/metrics contracts
-5. Human report surfaces
-6. Published frontend snapshot
+```text
+canonical ledger ingest
+  -> governed materialization / semantic + cash facts
+  -> debt position/activity + treasury
+  -> governed monthly frontier + annual dashboard
+  -> publication bundle
+  -> professional presentation + governed drilldowns
+```
 
-## Command abstraction
+This is the supported architecture. A generic views stage, a parallel `metric_values` engine, and `accounting.human.*` report authority are retired from the current spine.
 
-- canonical layer commands: `make ledger`, `materialize`, `debt`, `debt-views`, `metrics`, `human-report`, `publish-latest`
-- composite command: `make build-all`
+## Authority abstraction
+
+Each layer has one governing producer/contract. Downstream reporting should consume governed artifacts and explicit contracts rather than recreate accounting membership from convenience files or legacy presentation shapes.
+
+Compatibility code can exist only as a bounded non-authoritative interface. Its presence does not make it a parallel semantic authority.
+
+## Run abstraction
+
+Generated outputs belong to specific runs/scopes. They are evidence produced by executable authority, not hand-maintained sources of accounting meaning.
+
+Fixture-safe validation and live/consequential execution are different safety classes. Detailed command guidance is owned by the operations refresh wave and must match the current upstream Makefile.
 
 ## Consumer abstraction
 
-- read for consumption: `public/accounting/latest/*`
-- read for debugging: `out/*`
+Publication packages approved outputs for downstream use. Viewer-specific presentation is owned by `accounting-viewer`; this repository does not infer viewer behavior from old snapshot prose.
 
-## Governance abstraction
+## Repository abstraction
 
-- every layer publishes named artifacts,
-- downstream layers consume contract artifacts, not ad-hoc intermediate files.
+- `accounting-workflows`: calculations, accounting-rule implementation, governed reporting, publication generation, professional packs/drilldowns.
+- `accounting-viewer`: viewer-specific presentation over approved packaged outputs.
+- `accounting-docs`: public operating, architecture, and contract guidance.
+
+## Semantic guardrails
+
+The architecture must preserve explicit distinctions between operating revenue and funding, property OPEX and household/personal expenditure, core contribution and broader support, debt stock and debt activity, validated and inferred cash, monthly flows and annual closing stock, and native currencies versus explicit valuation layers.
+
+Those accounting distinctions do not themselves establish legal ownership, enforceability, inheritance rights, or family-governance conclusions.

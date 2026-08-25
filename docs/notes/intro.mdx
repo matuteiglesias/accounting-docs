@@ -2,51 +2,48 @@
 title: "Accounting Docs"
 sidebar_label: "Start here"
 sidebar_position: 1
-description: "Entry point for the accounting documentation site and its main operating paths."
+description: "Entry point for the governed accounting documentation site and its current authority boundaries."
 doc_type: "guide"
 ---
 
+# Accounting documentation
 
-# Tutorial Intro
+Status: current architecture entrypoint  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
-Let's discover **Docusaurus in less than 5 minutes**.
+This site explains how to operate, understand, and consume the accounting system. It does not own ledger data, accounting calculations, source documents, viewer implementation, or live runtime truth.
 
-## Getting Started
+## Current backend spine
 
-Get started by **creating a new site**.
-
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
-
-### What you'll need
-
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
-
-## Generate a new site
-
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
+```text
+canonical ledger ingest
+  -> governed materialization / semantic + cash facts
+  -> debt position/activity + treasury
+  -> governed monthly frontier + annual dashboard
+  -> publication bundle
+  -> professional presentation + governed drilldowns
 ```
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+The current executable backend does **not** use a generic views stage, a parallel `metric_values` engine, or `accounting.human.*` as accounting authority. Older pages may still mention those concepts during the staged documentation migration; those references are not controlling current architecture.
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+## Where to start
 
-## Start your site
+- [Current state map](/notes/current_state_map) — current architecture, authority boundaries, and retired layers.
+- [Foundations](/notes/library/foundations/index) — shared vocabulary and role-based navigation.
+- [Governed-spine truth baseline](/notes/library/governance/governed-spine-truth-baseline) — evidence baseline for the refresh.
+- [Refresh program](/notes/library/governance/governed-spine-docs-refresh-program) — sequential migration waves.
 
-Run the development server:
+Operator, artifact-contract, consumer, and automation guidance is being refreshed in later bounded waves. If one of those pages conflicts with current `accounting-workflows` executable contracts or tests, upstream executable authority wins and the documentation should be repaired rather than the retired behavior restored.
 
-```bash
-cd my-website
-npm run start
-```
+## Repository boundaries
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+- `accounting-workflows`: canonical transformations, accounting rules, governed reporting calculations, publication generation, professional packs, and drilldowns.
+- `accounting-viewer`: viewer-specific presentation over approved packaged outputs.
+- `accounting-docs`: public operating guidance, architecture and contract explanation, and this Docusaurus site.
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+Accounting classifications documented here do not determine legal ownership, rights, enforceability, family governance, or negotiation positions.
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+## Verification boundary
+
+This page records source-level architecture verification against the upstream commit above. It does not assert that a live accounting run, latest pointer, deployed site, or private source dataset is fresh or successful.
