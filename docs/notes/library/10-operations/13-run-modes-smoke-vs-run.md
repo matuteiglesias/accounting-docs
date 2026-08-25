@@ -2,41 +2,79 @@
 title: "Run Modes: Smoke vs Run"
 sidebar_label: "Smoke vs run"
 sidebar_position: 13
-description: "Explains the difference between smoke runs, full runs, live runs, and downstream rebuilds."
+description: "Explains fixture-safe validation, live runs, existing-run rebuilds, publication, and cleanup safety classes."
 doc_type: "guide"
 ---
 
+# Run Modes: Smoke vs Run
 
-# 13 run modes smoke vs run
+Status: current operations guidance  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
-Status: draft
-Last reviewed: 2026-05-22
+## Fixture-safe validation
 
-## Smoke mode
+Use fixture-safe commands to establish code/contract confidence without live sheet access:
 
-Purpose:
-- Fixture/offline confidence without live sheet dependencies.
+```bash
+make validate
+make smoke-core
+make smoke-full
+```
 
-Entry command:
-- `make smoke`
+- `validate`: compile + contracts + regression suite.
+- `smoke-core`: fixture ingest + governed semantic/cash materialization.
+- `smoke-full`: smoke core + validation + publication dry-run.
 
-Key characteristics:
-- Uses fixture CSV (`FIXTURE` variable defaulting to `fixtures/ledger_fixture.csv`).
-- Writes under `out/smoke/accounting`.
+A fixture pass does not prove live source freshness.
 
-## Run mode
+## Live canonical core
 
-Purpose:
-- Live bounded run using configured sheet/env vars.
+```bash
+make run-canonical
+```
 
-Entry command:
-- `make build-report` (or layer-by-layer canonical targets)
+This performs live ingest plus governed materialization and writes a timestamped scoped run. It does not perform debt, metrics, publication, or professional presentation.
 
-Key characteristics:
-- Uses `ACCOUNT_SHEET_URL`, `ACCOUNT_SA`, `ACCOUNT_SHEET_NAME` for live ingest.
-- Writes timestamped artifacts under `out/run/accounting/<RUN_ID>`, `out/metrics/<RUN_ID>`, and `out/human_reports/<RUN_ID>/...`.
+## Full live run
 
-## Why this distinction matters
+```bash
+make run-full
+```
 
-- Smoke failures often isolate environment/setup issues quickly.
-- Run failures can indicate data-source issues, env wiring, or pipeline regressions.
+This is the consequential end-to-end live operation through debt, governed metrics/annual dashboard, publication, and `release-check`.
+
+Do not use `run-full` merely to find out whether a local environment works.
+
+## Existing-run mode
+
+Existing-run commands reuse an already materialized run and should be pinned explicitly:
+
+```bash
+make metrics-from-run RUN_STAMP=<existing-stamp> BOXES='<same scope>'
+make run-dashboard RUN_STAMP=<existing-stamp> BOXES='<same scope>'
+```
+
+The run root identity includes both `RUN_STAMP` and scope. A different `BOXES` value can select a different run root.
+
+## Publication-only mode
+
+```bash
+DRY_RUN=1 make publish-latest
+make publish-latest
+make release-check
+```
+
+Publication does not read the live sheet, but a real `publish-latest` changes the packaged public surface. `release-check` is the separate readiness gate.
+
+## Cleanup mode
+
+```bash
+make clean-derived
+```
+
+Cleanup is destructive, not a validation mode. It requires explicit authorization and inspection of the target paths.
+
+## Concurrency
+
+Do not overlap same-scope live runs while upstream issue #44 remains unresolved. Separate runs by scope/time rather than assuming concurrent writes are safe.

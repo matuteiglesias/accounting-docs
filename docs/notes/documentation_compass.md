@@ -14,7 +14,7 @@ Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7
 
 ## Migration status
 
-The top-level architecture and foundations pages have been cut over to the governed-spine model. Operator commands, artifact contracts, consumer/professional guidance, automation, and historical cleanup are separate later waves in the active refresh program.
+The top-level architecture/foundations and operator command/runbook surfaces have been cut over to the governed-spine model. Artifact contracts, consumer/professional guidance, automation, and historical cleanup remain later waves in the active refresh program.
 
 Until those waves land, a downstream page may still contain historical architecture. Current `accounting-workflows` executable tests, typed contracts, authority modules, Makefile, `AGENTS.md`, and `SYSTEM.yaml` outrank stale prose.
 
@@ -24,11 +24,13 @@ Until those waves land, a downstream page may still contain historical architect
 
 Read first:
 
-1. [Current state map](/notes/current_state_map)
-2. [Backend truth baseline](/notes/library/governance/governed-spine-truth-baseline)
-3. `notes/accounting_spine_runbook.md` and `notes/canonical_commands.md` only with the understanding that their dedicated command-surface refresh is the next wave.
+1. [Operator start](/notes/library/operations/operator-start-here)
+2. [Environment bootstrap](/notes/environment_bootstrap)
+3. [Accounting spine runbook](/notes/accounting_spine_runbook)
+4. [Canonical commands](/notes/canonical_commands)
+5. [Incidents: first 15 minutes](/notes/library/operations/incidents-first-15-minutes)
 
-For current command names, check the upstream Makefile before live or consequential execution.
+Use fixture-safe validation before live/consequential execution. Treat `run-full`, publication, cleanup, and live upstream dependency targets according to their documented safety class.
 
 ### Developer / agent
 
@@ -36,8 +38,9 @@ Read first:
 
 1. root `AGENTS.md`
 2. [Current state map](/notes/current_state_map)
-3. [Autonomous documentation PR protocol](/notes/library/governance/autonomous-doc-pr-protocol)
-4. the current upstream authority relevant to the change
+3. [Backend entrypoints](/notes/entrypoints)
+4. [Autonomous documentation PR protocol](/notes/library/governance/autonomous-doc-pr-protocol)
+5. the current upstream authority relevant to the change
 
 Do not preserve a retired layer merely because an older document or filename mentions it.
 
@@ -59,7 +62,7 @@ Read first:
 2. the current upstream Makefile
 3. automation pages under `library/20-automation/` only with the explicit concurrency limitation in mind
 
-Do not assume overlapping same-scope runs are supported while upstream issue #44 remains unresolved.
+Do not assume overlapping same-scope runs are supported while upstream issue #44 remains unresolved. Do not assume a historical systemd/cron unit is currently deployed until the automation wave verifies it.
 
 ## High-level abstractions
 
@@ -69,7 +72,7 @@ Use these current abstractions:
 2. **Authority:** executable upstream behavior and contracts outrank documentation copies of the model.
 3. **Runs and outputs:** generated artifacts are evidence from a specific run, not permanent semantic authority.
 4. **Repository boundaries:** workflows calculates; viewer presents; docs explains.
-5. **Safety classes:** fixture-safe validation and live/consequential execution must remain distinct.
+5. **Safety classes:** fixture-safe validation, live execution, existing-run work, publication, and destructive cleanup are distinct.
 
 ## Retired architecture warning
 

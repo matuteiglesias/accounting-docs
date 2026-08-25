@@ -6,136 +6,113 @@ description: "Environment setup, secrets, paths, and runtime assumptions require
 doc_type: "runbook"
 ---
 
+# Environment Bootstrap
 
-# Environment Bootstrap (Wave 1)
-
-Status: authority draft
-Last reviewed: 2026-05-22
-Audience: operators, developers, coding agents
+Status: current operations reference  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
 ## Purpose
 
-Make local and automation environments deterministic enough to separate:
-- bootstrap/runtime failures, from
-- real accounting pipeline regressions.
+Establish enough runtime confidence to distinguish an environment problem from an accounting-pipeline regression **without touching live accounting inputs**.
 
-This is the first-response environment contract for this repository.
+Commands on this page are run from the root of `matuteiglesias/accounting-workflows`, not from this documentation repository.
 
-## Source-of-truth anchors
+## Current evidence boundary
 
-This guide is anchored to:
-- `Makefile` (command surface, env vars, fixture defaults, run/smoke orchestration)
-- `README.md` (run and logging operational expectations)
-- stage entrypoints (`accounting.ledger.ingest`, `accounting.stage_d.materialize`, `accounting.views`, metrics/debt/human/publish modules)
+At the checked upstream commit:
 
-## Python runtime policy
+- GitHub CI runs Python **3.12**;
+- the bounded validation job installs `pandas` and `pytest` after upgrading `pip`;
+- CI then runs `make validate`;
+- the repository root does not expose a `requirements*.txt` or `pyproject.toml` dependency manifest;
+- therefore the CI install is evidence for the **fixture-safe validation environment**, not a complete live-production dependency contract.
 
-Observed command behavior:
-- `make doctor` prints active Python version and compile-checks command modules.
+Do not turn a missing live dependency into an accounting-code change merely to make a local environment pass.
 
-Policy (current):
-- Use Python **3.12.x** for operator and automation runtime.
-- If you change runtime major/minor, re-run full command-surface checks before promoting.
+## Fixture-safe bootstrap
 
-## Dependency policy
-
-Current repo state:
-- Pipeline modules import `pandas` across ingest/materialize/views/metrics/debt/human.
-- `make smoke` fails immediately when `pandas` is missing.
-- No dependency manifest (`requirements*.txt` or `pyproject.toml`) is currently present.
-
-Operational implication:
-- Environment bootstrap is currently sensitive to local machine history.
-- This is the highest-likelihood cause of "looks broken after refactor" false alarms.
-
-## Bootstrap steps
-
-### 1) Create and activate a virtual environment
+A local environment matching the current CI validation boundary can be created with:
 
 ```bash
-python3 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip pandas pytest
 ```
 
-### 2) Install dependencies
-
-Because there is no authoritative dependency manifest yet, install minimum required packages iteratively from import failures.
-
-Recommended immediate follow-up for repo maintainers:
-- add one authoritative dependency manifest (`requirements.txt` or `pyproject.toml`) and pin this guide to it.
-
-### 3) Configure required environment variables
-
-Variables used by Makefile and runtime modules:
-- `ACCOUNT_SA`
-- `ACCOUNT_SHEET_URL`
-- `ACCOUNT_SHEET_NAME` (default: `C. Long Ledger`)
-- `FIXTURE` (default: `fixtures/ledger_fixture.csv`)
-
-Example `.env`:
-
-```bash
-ACCOUNT_SA=/absolute/path/to/service-account.json
-ACCOUNT_SHEET_URL=https://docs.google.com/spreadsheets/d/...
-ACCOUNT_SHEET_NAME=C. Long Ledger
-FIXTURE=/workspace/accounting-workflows/fixtures/ledger_fixture.csv
-```
-
-## Sanity command sequence
-
-Run in this exact order:
+Then inspect and validate the command surface:
 
 ```bash
 make help
 make doctor
-make smoke
+make validate
+make smoke-core
+make smoke-full
 ```
 
 Interpretation:
-- `make help`: command surface discovery and canonical target visibility.
-- `make doctor`: python runtime + compile/import surface verification.
-- `make smoke`: fixture/offline pipeline confidence through views.
 
-Failure classification:
-- Missing module/import error -> bootstrap/dependency issue.
-- Invariant/contract output failure -> probable logic regression.
+- `make doctor` prints the active Python version and compile-checks `accounting`, `scripts`, and `tests`;
+- `make validate` adds contract checks and the regression suite;
+- `make smoke-core` uses the fixture ledger and checks governed semantic and cash materialization;
+- `make smoke-full` adds repository validation and a **publication dry-run**.
 
-## Optional deeper CLI checks
+`smoke-full` is intentionally partial: it is not proof of live ingest, live debt generation, a current publication, or professional-report freshness.
 
-```bash
-python -m accounting.ledger.ingest --help
-python -m accounting.stage_d.materialize --help
-python -m accounting.views --help
-python -m accounting.metrics.build --help
-python -m accounting.debt.resolve --help
-python -m accounting.human.document --help
-python -m accounting.publish.latest --help
+## Live environment inputs
+
+Live ingest is a different safety class. The current Makefile uses:
+
+- `ACCOUNT_SHEET_URL` — required by `run-ingest`;
+- `ACCOUNT_SA` — service-account path/value passed to live ingest;
+- `ACCOUNT_SHEET_NAME` — defaults to `C. Long Ledger`;
+- `BOXES` — defaults to `Family Business,Property Management`;
+- `OUT` — defaults to `out`;
+- `FREQ` — defaults to `M`.
+
+The Makefile optionally includes a root `.env`. Any local credential file remains private and must not be committed. The presence of an env file is not evidence that its credentials are valid or that the live source is current.
+
+Do **not** run `make run-canonical`, `make run-full`, or `make publish-latest` merely to test whether bootstrap succeeded.
+
+## Exact-run variables
+
+The live run root is derived from `RUN_STAMP` and the scope resolved from `BOXES`:
+
+```text
+out/run/accounting/<RUN_STAMP>_<SCOPE_TAG>
 ```
 
-## Evidence map
+Debt and metric output roots use the same run identifier under `out/debt_resolution/` and `out/metrics/`.
 
-### Commands validated (2026-05-22)
+When operating on an existing run, pin the exact `RUN_STAMP` and preserve the same `BOXES`/scope. Do not let an unpinned new timestamp silently select a different run.
 
-- `make help` -> pass
-- `make doctor` -> pass
-- `make smoke` -> fails in current environment when `pandas` is missing
-- `rg --files -g 'requirements*.txt' -g 'pyproject.toml'` -> no manifest found
+## Failure classification
 
-### Code anchors
+| Failure | First classification |
+|---|---|
+| Python/compile failure in `make doctor` | runtime/bootstrap |
+| missing `pandas`/`pytest` in fixture validation | validation environment |
+| contract or pytest failure in `make validate` | code/contract regression candidate |
+| semantic/cash artifact failure in `make smoke-core` | governed fixture regression candidate |
+| live credential/source error | live environment/source issue; fixture results do not settle it |
+| missing existing-run artifact | run selection or upstream-stage issue; verify exact run before rebuilding |
 
-- `Makefile`
-- `README.md`
-- `accounting/ledger/ingest.py`
-- `accounting/stage_d/materialize.py`
-- `accounting/views.py`
-- `accounting/metrics/build.py`
-- `accounting/debt/resolve.py`
-- `accounting/human/document.py`
-- `accounting/publish/latest.py`
-- `accounting/support/env.py`
+## Safety boundaries
 
-### Known assumptions
+- Fixture checks do not authorize live ingestion.
+- Live ingestion does not authorize publication.
+- Publication does not prove release readiness; `make release-check` is the current readiness check.
+- `make clean-derived` deletes generated outputs and requires explicit cleanup authorization.
+- Overlapping same-scope runs are not a supported assumption while upstream concurrency issue #44 remains unresolved.
 
-- Python 3.12.x is policy-by-observation until pinned in repo config.
-- Final dependency set remains unpinned until a manifest is added.
+## Evidence anchors
+
+Checked at the upstream commit above:
+
+- `accounting-workflows/.github/workflows/ci.yml`
+- `accounting-workflows/Makefile`
+- `accounting-workflows/AGENTS.md`
+- `accounting-workflows/SYSTEM.yaml`
+- `accounting-workflows/README.md`
+
+No live/private accounting input was accessed to refresh this page.
