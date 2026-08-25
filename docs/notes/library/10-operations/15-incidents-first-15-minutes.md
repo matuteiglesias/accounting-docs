@@ -2,7 +2,7 @@
 title: "Incidents: First 15 Minutes"
 sidebar_label: "Incidents"
 sidebar_position: 15
-description: "First-response checklist for failed accounting runs, missing governed artifacts, and publication-readiness failures."
+description: "First-response checklist for failed accounting runs, missing governed artifacts, scheduler faults, and publication-readiness failures."
 doc_type: "runbook"
 ---
 
@@ -12,7 +12,9 @@ Status: current first-response runbook
 Last reviewed: 2026-08-25  
 Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
-## 0–5 minutes: establish non-live evidence
+## 0–5 minutes: stop overlap and establish non-live evidence
+
+If a scheduler is involved, first determine whether a same-scope job is still active. Suppress retries/manual runs that would overlap it.
 
 From the `accounting-workflows` root:
 
@@ -67,54 +69,78 @@ Signals:
 
 Next action: establish exact run ID/scope before rerunning anything. Prefer a bounded existing-run operation over live upstream when possible.
 
-### Publication/release
+### Latest/publication/release
 
 Signals:
-- latest artifacts cannot be packaged;
-- public scope is incomplete;
-- `release-check` fails.
+- run/debt/metrics latest targets disagree;
+- metrics/debt latest cannot be packaged as one run;
+- public scope is absent/partial;
+- publication QA or `release-check` fails.
 
-Next action: identify the missing/invalid producer artifact. Do not hand-edit the public bundle.
+Next action: capture current latest targets and public manifest **before** changing them. `run-full` can fail after latest promotion, so failed status alone does not prove pointers stayed on the prior run.
+
+### Scheduler/concurrency
+
+Signals:
+- expected job did not fire;
+- retry overlapped a same-scope run;
+- wrong working directory/environment/scope;
+- manual and scheduled runs collided.
+
+Next action: inspect the actual deployed scheduler/job definition and logs. Do not assume a historical unit name. Serialize same-scope execution while issue #44 is open.
 
 ## 10–15 minutes: choose the smallest intervention
 
 Examples:
 
 - environment only -> fix environment, rerun `doctor`/`validate`;
-- governed fixture regression -> fix/test the source logic, rerun the bounded fixture checks;
+- governed fixture regression -> fix/test the source logic, rerun bounded fixture checks;
 - existing metrics failure -> `metrics-from-run` on the exact run after prerequisites are verified;
-- live source failure -> resolve source/credential issue before any downstream rebuild;
-- publication failure -> repair producer/latest selection, then package and run `release-check`.
+- live source failure -> resolve source/credential issue before downstream rebuild;
+- coherent latest + publication-only failure -> repair publication issue, then `make publish-latest BOXES='<same scope>'` and `make release-check BOXES='<same scope>'`;
+- scheduler did not fire -> repair actual scheduler wiring without changing accounting code;
+- same-scope overlap -> stop/suppress the competing attempt; preserve both run traces before deciding recovery.
 
 A full `make run-full` is appropriate only when a full live run is actually authorized and needed.
 
 ## Hard safety boundaries
 
 - `make clean-derived` is destructive and is never a routine incident step.
-- `make publish-latest` is consequential and must not be used to cover an upstream failure.
+- `make publish-latest` is consequential and must not be used when source latest families are incoherent.
 - `run-debt-views` has live upstream dependencies.
 - overlapping same-scope runs are unsupported while upstream issue #44 remains unresolved.
+- `run-full` promotes producer latest pointers before publication/release checking; inspect pointer state after late failures.
+- publication cleans and rebuilds the scope-qualified public directory; a partial public directory is not a completed release.
 - do not reintroduce retired `run-views`, `metric_values`, or human-report stages during recovery.
 - do not resolve accounting ambiguity, disputed ownership, or legal meaning through operational prose or code.
 
 ## Automation/logs
 
-If a deployed scheduler is involved, inspect the **actually configured** scheduler/service logs. Do not assume an older documented systemd unit name is still live. Automation wiring and concurrency recovery are governed in a later refresh wave.
+Repository inspection found no checked-in production systemd timer/service, crontab, or scheduled GitHub Actions live job. If a deployed scheduler is involved, inspect its **actual** job/unit and logs.
+
+The upstream README keeps a `journalctl` logging convention, but that does not establish `accounting-spine-live.service` or any other unit name.
+
+See [Recovery and Rollback](/notes/library/automation/recovery-and-rollback) for latest/publish failure cases.
 
 ## Incident evidence record
 
-Record:
-
 ```text
 What failed:
+Scheduler/job:
 Exact command:
 RUN_STAMP / run ID:
 BOXES / scope:
+Same-scope run already active?:
 Fixture checks:
 Failure class:
 Affected artifacts:
+run latest target:
+debt latest target:
+metrics latest target:
+Public manifest source_run_id:
 Live inputs accessed:
 Publication affected:
+Release-check result:
 Smallest next intervention:
 Human decision required:
 ```

@@ -15,9 +15,9 @@ Viewer boundary checked: `accounting-viewer@9d2dfabe3227195f7910ae362bcaaedd6c50
 
 ## Migration status
 
-The top-level architecture/foundations, operator command/runbook surface, artifact/contract authority, and consumer/professional semantics have been cut over to the governed-spine model. Automation/recovery and historical/IA cleanup remain later waves in the active refresh program.
+The top-level architecture/foundations, operator command/runbook surface, artifact/contract authority, consumer/professional semantics, and automation/recovery policy have been cut over to the governed-spine model. Historical/IA cleanup and final drift/release closure remain later waves in the active refresh program.
 
-Until those waves land, automation or historical pages may still contain stale architecture. Current executable tests, typed contracts, authority modules, Makefile, `AGENTS.md`, and `SYSTEM.yaml` outrank stale prose.
+Until those waves land, historical/context pages may still contain stale architecture. Current executable tests, typed contracts, authority modules, Makefile, `AGENTS.md`, and `SYSTEM.yaml` outrank stale prose.
 
 ## Start here by role
 
@@ -45,10 +45,11 @@ Read first:
 5. [Output contracts](/notes/output_contracts)
 6. [Metric contract](/notes/metric_registry_contract) or [Debt resolver contract](/notes/debt_resolver_contract) as relevant
 7. [Human report catalog](/notes/human_report_catalog) when changing professional/consumer behavior
-8. [Autonomous documentation PR protocol](/notes/library/governance/autonomous-doc-pr-protocol)
-9. the current upstream authority relevant to the change
+8. [Automation wiring](/notes/automation_wiring_spec) when changing scheduler/runtime/recovery behavior
+9. [Autonomous documentation PR protocol](/notes/library/governance/autonomous-doc-pr-protocol)
+10. the current upstream authority relevant to the change
 
-Artifact existence does not establish authority. Check artifact role, grain, currency policy, source authority, frontend suitability, and governed drilldown identity before using it downstream.
+Artifact existence does not establish authority. Check artifact role, grain, currency policy, source authority, frontend suitability, governed drilldown identity, run/scope identity, and latest/publication behavior before using it downstream.
 
 ### Analyst / stakeholder / report consumer
 
@@ -70,12 +71,18 @@ The private `accounting-viewer` is read-only. Its current loader still reflects 
 
 Read first:
 
-1. [Backend truth baseline](/notes/library/governance/governed-spine-truth-baseline)
-2. [Accounting spine runbook](/notes/accounting_spine_runbook)
-3. the current upstream Makefile
-4. automation pages under `library/20-automation/` only with the explicit concurrency limitation in mind
+1. [Automation start](/notes/library/automation/automation-start-here)
+2. [Automation wiring](/notes/automation_wiring_spec)
+3. [Scheduler wiring](/notes/library/automation/scheduler-wiring-spec)
+4. [Runtime environment](/notes/library/automation/runtime-env-contract)
+5. [Cadence, SLO, and alerting](/notes/library/automation/cadence-slo-and-alerting)
+6. [Recovery and rollback](/notes/library/automation/recovery-and-rollback)
+7. [Accounting spine runbook](/notes/accounting_spine_runbook)
+8. current upstream Makefile / `SYSTEM.yaml` / issue #44
 
-Do not assume overlapping same-scope runs are supported while upstream issue #44 remains unresolved. Do not assume a historical systemd/cron unit is currently deployed until the automation wave verifies it.
+Current scheduler policy is now documented, but **production deployment state is not inferred from the repository**. Checked-in evidence contains no production systemd service/timer, crontab, or scheduled GitHub Actions live job. Actual scheduler identity, host path, cadence, environment source, and unit/job name remain UNKNOWN until inspected on the deployment.
+
+Do not permit overlapping same-scope live runs while issue #44 remains unresolved. `run-full` promotes producer latest pointers before publication/release checking, so late failures require pointer/publication inspection before retry.
 
 ## High-level abstractions
 
@@ -86,13 +93,18 @@ Use these current abstractions:
 3. **Artifact roles:** canonical source, diagnostic/internal evidence, QA, presentation-only, legacy, unsafe-for-frontend, and derived valuation are deliberately distinct.
 4. **Consumer semantics:** reports select and explain governed facts; they do not invent accounting membership.
 5. **Drilldown reconciliation:** a displayed cell is traceable through explicit identity, grain, measure, source membership and residual status; ambiguous governed rows fail closed.
-6. **Runs and outputs:** generated artifacts are evidence from a specific run, not permanent semantic authority.
-7. **Repository boundaries:** workflows calculates; viewer presents; docs explains.
-8. **Safety classes:** fixture-safe validation, live execution, existing-run work, publication, and destructive cleanup are distinct.
+6. **Automation boundary:** scheduling policy can select when/how a current command runs, but repository evidence does not prove a production scheduler deployment.
+7. **Concurrency boundary:** same-scope live jobs are serialized externally while issue #44 remains unresolved; CI concurrency is not a live-run lock.
+8. **Latest/release boundary:** individual pointer replacement is narrower than transactional run-family/publication rollback; late failures require explicit evidence checks.
+9. **Runs and outputs:** generated artifacts are evidence from a specific run, not permanent semantic authority.
+10. **Repository boundaries:** workflows calculates; viewer presents; docs explains.
+11. **Safety classes:** fixture-safe validation, live execution, existing-run work, publication, scheduler deployment, and destructive cleanup are distinct.
 
 ## Retired architecture warning
 
-Generic `accounting.views` / `run-marts`, the parallel `metric_values`/`metric_registry` engine, and `accounting.human.*` report authority are not current layers. Historical or compatibility references may remain during migration but must not be treated as required current stages, contracts, or consumer surfaces.
+Generic `accounting.views` / `run-marts`, the parallel `metric_values`/`metric_registry` engine, and `accounting.human.*` report authority are not current layers. Historical or compatibility references may remain during migration but must not be treated as required current stages, contracts, consumer surfaces, or scheduler targets.
+
+Historical service/timer/cron examples likewise do not establish current deployment state.
 
 ## Active documentation program
 
