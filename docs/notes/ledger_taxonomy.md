@@ -2,160 +2,124 @@
 title: "Ledger Taxonomy"
 sidebar_label: "Ledger taxonomy"
 sidebar_position: 18
-description: "Contract for canonical ledger fields, taxonomy semantics, statuses, parties, currencies, and debt-related identifiers."
+description: "Defines the current canonical-ledger evidence boundary and how downstream governed semantics relate to ledger fields."
 doc_type: "contract"
 ---
 
 # Ledger Taxonomy
 
-This document defines the canonical accounting vocabulary used by the long ledger and all downstream accounting artifacts.
-
-The ledger is the source of truth. Metrics, debt resolution, human reports, and frontend snapshots should consume the ledger through canonical views or builders, not reinterpret raw rows independently.
+Status: current evidence contract  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
 ## Purpose
 
-The ledger taxonomy should answer:
+The canonical ledger is transaction evidence. It preserves normalized accounting inputs and provenance so downstream governed authorities can classify, aggregate, reconcile, and drill back to source rows.
 
-- What economic event does this row represent?
-- Which account or pocket does it affect?
-- Which party paid, received, contributed, owed, or benefited?
-- Is the row already paid, still open, or closed by a downstream resolution process?
-- Is the row part of ordinary operations, household support, internal debt, rent, contribution, repayment, or correction?
-- Can this row be safely included in metrics, debt resolution, human reports, or only in audit/debug views?
+The ledger does **not** by itself make every raw label a reporting semantic. Current semantic membership is governed downstream by explicit classification contracts.
 
-## Core fields
+## Canonical evidence fields
 
-| Field | Meaning | Notes |
-|---|---|---|
-| `transaction_id` | Stable event identifier | Should identify the economic event or row family. Must not be casually regenerated. |
-| `date` | Economic date | Used for period grouping, chronology, and debt allocation. |
-| `Flujo` | High-level flow family | Example: rent, cost, contribution, debt, repayment, household, correction. |
-| `Tipo` | More specific transaction type | Used by builders and reports to classify events. |
-| `Cuenta` | Cash/accounting pocket | Should identify the account or system pocket affected by the row. |
-| `Party` | Human/entity actor | Example: Matías, Alejandro, PM, FB, Primos, tenant, supplier. |
-| `Currency` | Currency of the amount | Must be explicit when USD/ARS logic matters. |
-| `Amount` | Signed or normalized amount | Sign conventions must be defined upstream and kept stable. |
-| `status` | Operational status | Controls inclusion in different workflows. |
-| `debt_family` | Debt grouping key | Used by the internal debt resolver when applicable. |
+Current ingest/materialization code relies on fields including:
 
-Actual column names may vary in the raw source. Canonical builders should normalize names before downstream use.
+```text
+tx_id
+Date
+amount
+Currency
+payer
+receiver
+Flujo
+Tipo
+status
+Box
+source_file
+source_row
+ingest_ts
+```
 
-## Status semantics
+Other detail/provenance columns may be present. Executable ingest and tests remain the schema authority.
 
-`status` is not merely display metadata. It affects which rows enter which workflows.
+Key invariants:
 
-| Status | Meaning | General accounting use | Debt resolver use |
-|---|---|---|---|
-| `pagado` | Paid/realized event | Usually included | Included if it represents a repayment or realized debt event |
-| `abierto` | Open obligation or item | Often excluded from ordinary paid-only reports | Must be included when building open debt items |
-| `cerrado` | Closed/resolved obligation | Usually excluded from cash-only reports | May be included for audit or historical resolution |
-| `planeado` | Planned/forecast item | Excluded from realized accounting unless explicitly forecast mode | Excluded unless a forecast resolver exists |
-| `refinanciado` | Reworked obligation | Excluded from ordinary paid-only reports unless explicitly modeled | Must be handled carefully; can create double-count risk |
+- transaction identity is stable enough for provenance/drilldown use;
+- date and amount are parseable or visibly anomalous;
+- native currency is explicit;
+- payer/receiver and `Box` remain distinguishable dimensions;
+- source provenance is retained;
+- downstream code does not silently rewrite source records to make reports reconcile.
 
-Important rule: ordinary paid accounting can default to `status=pagado`, but debt workflows often need a broader universe. Debt resolution should be able to request rows with `only_status=None` or equivalent.
+## Paid/scoped ledger versus all-status debt evidence
 
-## Flow and type responsibilities
+The live run emits both:
 
-`Flujo` should provide the broad economic family.
+```text
+ledger_canonical.csv
+ledger_canonical_all_status.csv
+```
 
-`Tipo` should provide the operational subtype.
+`ledger_canonical_all_status.csv` is scoped normalized evidence used by the debt resolver so open/non-paid debt evidence is not lost through a paid-only reporting selection. It does not create a second canonical accounting meaning.
 
-Do not let human report labels become the true taxonomy. Human labels can be nicer, but the ledger taxonomy must stay explicit and machine-checkable.
+## `Flujo` and `Tipo`
 
-Example conceptual mapping:
+`Flujo`/`Tipo` remain ledger classification inputs, but modern reporting membership is resolved by the governed semantic authority rather than by scattered string tests in downstream reports.
 
-| Flow family | Possible types | Downstream use |
-|---|---|---|
-| Rent | rent received, rent owed, tenant payment | income statement, rent rollups |
-| Operating cost | services, maintenance, repairs, fees | income statement, cost reports |
-| Household | household contribution, household payment | family contribution reports |
-| Internal debt | loan, interest, open item | debt resolver |
-| Repayment | repayment, cancellation | debt resolver, cash flow |
-| Contribution | owner contribution, family contribution | balance/cash support reports |
-| Correction | reclassification, duplicate fix, reversal | QA/audit reports |
+Current semantic outputs expose audited membership through artifacts such as:
 
-The exact allowed values should be validated separately once the current sheet vocabulary is frozen.
+```text
+classification_audit.csv
+classification_audit_summary.csv
+monthly_flow_semantic_split.csv
+monthly_operating_statement.csv
+```
 
-## Party semantics
+The exact rule vocabulary belongs to the executable semantic registry/contracts. Documentation must not invent new allowed values or map ambiguous rows by intuition.
 
-`Party` should represent the actor relevant to the accounting question. Avoid mixing payer, beneficiary, debtor, creditor, and administrator into one ambiguous label when the distinction matters.
+## `Box`
 
-When needed, downstream normalized views may derive richer fields such as:
+`Box` is a scope and operational-accounting dimension. Current runs derive a scope tag from the requested box set and carry that scope through run/latest/publication identities.
 
-| Derived role | Meaning |
-|---|---|
-| `payer_party` | Who paid cash |
-| `receiver_party` | Who received cash |
-| `debtor_party` | Who owes |
-| `creditor_party` | Who is owed |
-| `beneficiary_party` | Who economically benefited |
-| `admin_party` | Who controlled or administered the action |
+A downstream artifact must not silently reintroduce an excluded box. In particular, household/personal evidence must not leak into property-business aggregates merely because it shares a ledger or party.
 
-For the current accounting system, the most important distinction is between operational pockets such as `PM`/`FB` and human parties such as `Matías`, `Alejandro`, `Primos`, or tenants.
+## Parties
 
-## Currency semantics
+`payer` and `receiver` are explicit transaction roles. Debt and semantic layers may derive additional role-specific fields where their contracts require them; those derived roles must trace back to canonical evidence.
 
-Currency should be explicit whenever the economic claim is not equivalent to the paid cash currency.
+Do not collapse payer, receiver, debtor, creditor, beneficiary, or administrator into one undocumented generic party meaning.
 
-Known important case:
+## Currency
 
-- Matías may advance ARS.
-- The economic claim may be tracked in USD or USD-equivalent through CCL.
-- Debt reports must not silently collapse ARS paid amount and USD claim amount.
+`Currency` is native transaction/reporting grain. Cross-currency sums are forbidden unless an explicit valuation/reporting contract is invoked.
 
-A ledger row should make clear whether it represents:
+Derived USD/CCL sidecars are valuation evidence with their own policy/rate/provenance. They do not replace the native ledger amount or currency.
 
-- cash paid in ARS;
-- nominal debt in USD;
-- converted reporting value;
-- interest;
-- repayment;
-- correction or reclassification.
+## Status
 
-## Debt fields
+`status` affects workflow eligibility, but its exact vocabulary/recognition behavior is executable authority. The critical current contract is that debt resolution receives the scoped all-status evidence it needs rather than assuming the ordinary paid reporting universe is complete debt inventory.
 
-Rows entering debt resolution need enough structure to determine:
+Do not add status meanings in documentation that are not established by current code/tests.
 
-- when the obligation opened;
-- who owes;
-- who is owed;
-- principal amount;
-- interest amount, if any;
-- repayment amount;
-- debt family;
-- chronological eligibility.
+## Semantic authority boundary
 
-Minimum debt-relevant fields:
+Current reports and metrics consume governed semantic/cash/debt artifacts instead of reinterpreting raw ledger rows. This prevents later layers from independently deciding whether a row is operating revenue, property OPEX, funding, a distribution/draw, treasury FX, debt, unknown, or review-required.
 
-| Field | Meaning |
-|---|---|
-| `transaction_id` | Stable row or event identity |
-| `date` | Opening or repayment date |
-| `debt_family` | Which debt family the row belongs to |
-| `Party` or debtor/creditor fields | Who owes / who is owed |
-| `Tipo` | Principal, interest, repayment, correction |
-| `Currency` | Currency of the claim |
-| `Amount` | Amount to resolve |
+Unknown or ambiguous membership remains visible for review; it is not forced into a convenient bucket.
+
+## Debt boundary
+
+Debt resolution consumes `ledger_canonical_all_status.csv` and emits engine evidence. The canonical downstream debt stock/activity facts are produced later as `monthly_debt_position.csv` and `monthly_debt_activity.csv`.
+
+The ledger therefore provides debt evidence, while the debt authority owns debt-specific position/activity semantics.
 
 ## Non-negotiable invariants
 
-1. `transaction_id` should be unique at the row level or explicitly documented as a family-level identifier.
-2. `status=pagado` must not be the only allowed universe for debt resolution.
-3. Debt rows must not be silently excluded because they are open.
-4. Repayments must not resolve obligations that open in the future.
-5. Human reports must not redefine ledger semantics.
-6. Metrics must consume canonical fields, not raw ad hoc labels.
-7. Reclassifications and corrections should be visible enough to audit.
-
-## Known risks
-
-| Risk | Why it matters |
-|---|---|
-| Ambiguous `Party` | Can invert who paid, who owed, or who benefited. |
-| Mixed status semantics | Can drop debt inventory or inflate paid-only metrics. |
-| Currency ambiguity | Can mix ARS cash with USD-denominated claims. |
-| Debt family drift | Can allocate repayments to the wrong obligation family. |
-| Recomputed human logic | Can create numbers that do not match metric values. |
+1. Preserve source provenance and transaction identity.
+2. Preserve native currency and explicit Box scope.
+3. Do not let report code redefine ledger semantics.
+4. Do not infer validated cash from party/internal balances.
+5. Do not drop required debt evidence merely because it is outside a paid-only reporting slice.
+6. Corrections/reclassifications must remain auditable through source rows and governed classification outputs.
+7. Accounting labels do not decide legal ownership, rights, or family governance.
 
 ## Related docs
 
@@ -163,4 +127,3 @@ Minimum debt-relevant fields:
 - `/notes/contracts`
 - `/notes/debt_resolver_contract`
 - `/notes/metric_registry_contract`
-- `/notes/human_report_catalog`

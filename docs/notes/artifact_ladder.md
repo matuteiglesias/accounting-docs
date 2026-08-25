@@ -2,133 +2,163 @@
 title: "Artifact Ladder"
 sidebar_label: "Artifact ladder"
 sidebar_position: 12
-description: "Explains how raw accounting inputs become progressively more stable downstream artifacts."
+description: "Explains the current governed artifact chain, diagnostic evidence, and downstream authority boundaries."
 doc_type: "reference"
 ---
 
-
 # Accounting Artifact Ladder
 
-Status: authority draft
-Last reviewed: 2026-05-10
+Status: current contract reference  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
 ## Purpose
 
-The accounting backend should be read as a layered artifact pipeline, not as a flat collection of scripts.
+Read the backend as a chain of governed facts and explicit projections, not as a flat folder of CSVs.
 
 ```text
-source inputs
-  → canonical ledger
-  → materialized analytical artifacts
-  → metric/debt contracts
-  → human report surfaces
-  → frontend snapshot
+approved inputs
+  -> canonical ledger
+  -> governed semantic + cash facts
+  -> debt position/activity + treasury
+  -> governed metric frontier + annual dashboard
+  -> scope-qualified public bundle
+  -> professional presentation + drilldowns
 ```
 
-Each layer should read from the previous layer's contracts whenever possible. Downstream report builders should not read raw source inputs, metrics should read canonical/materialized artifacts, and frontend code should read frontend snapshots rather than internal work folders.
+Diagnostic material may exist beside these layers. Diagnostic existence does not make an artifact accounting authority.
 
-## Level 0 — Source inputs
+## Level 0 — approved inputs
 
-Examples:
+The configured live sheet and fixture CSVs are evidence inputs to `accounting.ledger.ingest`, not stable downstream contracts.
 
-- Google Sheet tabs.
-- Fixture CSVs.
-- Raw ledger rows or local exports.
-
-Producer: external systems, humans, fixtures.
-Primary consumer: `accounting.ledger.ingest`.
-
-Governance rule: source inputs are not stable downstream contracts. They can change shape, naming, and availability.
-
-## Level 1 — Canonical ledger
+## Level 1 — canonical transaction evidence
 
 Primary artifacts:
 
-- `ledger_canonical.csv`.
-- Ingest anomalies, currently attached to the canonical DataFrame and expected to become an explicit artifact.
+```text
+ledger_canonical.csv
+ledger_canonical_all_status.csv
+```
 
-Producer: `accounting.ledger.ingest`.
-Primary consumers: `accounting.stage_d.materialize`, debt resolution, metric/drilldown builders, and report evidence loaders.
+`ledger_canonical.csv` is canonical transaction evidence. `ledger_canonical_all_status.csv` is scoped all-status evidence used by debt resolution; it is not a separate recognition rule.
 
-Governance rule: this is the first stable accounting fact layer. All downstream analytical artifacts should be traceable to canonical ledger rows.
+## Level 2 — governed monthly semantic and cash facts
 
-## Level 2 — Materialized analytical artifacts
+Primary semantic artifacts:
 
-Primary artifacts:
+```text
+monthly_flow_semantic_split.csv
+monthly_operating_statement.csv
+monthly_operating_statement_qa.csv
+semantic_leakage_qa.csv
+classification_audit.csv
+classification_audit_summary.csv
+semantic_rule_registry.csv          # where emitted
+semantic_dashboard_coverage.csv     # where emitted
+```
 
-- `per_flow_time_long.freq=*.csv`.
-- `per_party_time_long.freq=*.csv`.
-- `daily_cash_position.csv`.
-- `box_balance_time_long.freq=*.csv` and `box_flow_balance_time_long.freq=*.csv` where present.
-- Stage D/materialization metadata and manifest files.
-- `views/*` outputs built from materialized Stage D artifacts.
+Primary governed cash artifacts:
 
-Producers: `accounting.stage_d.materialize`, with `accounting.views` as the current view-composition bridge.
-Primary consumers: metrics, human tables, and report factories.
+```text
+monthly_cash_close.csv
+monthly_cash_close_qa.csv
+```
 
-Governance rule: materialized Stage D outputs are the source of truth for views. Legacy report artifacts are optional compatibility inputs only and must not become required upstream dependencies.
+Old `per_flow_time_long*`, `per_party_time_long*`, `daily_cash_position.csv`, box-balance motors, and similar Stage-D tables remain useful diagnostic/internal evidence where present. They are not substitutes for semantic truth or validated cash.
 
-## Level 3 — Metric and debt contracts
+## Level 3 — debt and treasury authorities
 
-Primary metric artifacts:
+Debt engine evidence under `out/debt_resolution/<RUN_ID>/` includes:
 
-- `metric_values.csv`.
-- `metric_registry.csv`.
-- `validation_report.csv`.
-- `metric_views/*`.
-- `metric_drilldown/*`.
-- `build_manifest.json`.
+```text
+debt_open_items.csv
+debt_allocations.csv
+debt_repayment_events.csv
+debt_resolution_timeline.csv
+debt_status_reconciliation.csv
+debt_balance_daily.csv
+debt_balance_monthly.csv
+debt_balance_quarterly.csv
+debt_balance_yearly.csv
+```
 
-Primary debt artifacts:
+Canonical downstream debt facts in the run root are:
 
-- `debt_open_items.csv`.
-- `debt_allocations.csv`.
-- `debt_repayment_events.csv`.
-- `debt_resolution_timeline.csv`.
-- `debt_status_reconciliation.csv`.
-- `debt_balance_daily.csv`.
-- `debt_balance_monthly.csv`.
-- `debt_balance_quarterly.csv`.
-- `debt_balance_yearly.csv`.
+```text
+monthly_debt_position.csv
+monthly_debt_position_qa.csv
+monthly_debt_activity.csv
+monthly_debt_activity_qa.csv
+```
 
-Producers: `accounting.metrics.build`, `accounting.debt.resolve`, and `accounting.debt.balance_views`.
-Primary consumers: human tables, human reports, validation gates, and publish/frontend packaging.
+Treasury/accountability artifacts include `monthly_cash_accountability.csv` plus QA and, where emitted, governed Box treasury-flow artifacts.
 
-Governance rule: this is the most important contract layer for downstream interpretation. Reports should read metric/debt contracts rather than recomputing core metric formulas or debt allocation rules.
+`monthly_debt_position` is stock authority; `monthly_debt_activity` is movement authority. Raw debt-engine rows are audit evidence and are not automatically frontend-safe facts.
 
-## Level 4 — Human/report surfaces
+## Level 4 — governed metrics and annual lineage
 
-Primary artifacts:
+Current outputs under `out/metrics/<RUN_ID>/`:
 
-- Human table specs and generated human-facing tables.
-- `balance_humano_v2.html`.
-- `story_manifest.json`.
-- Drilldown-linked HTML/report pages.
-- Experimental front report pages and blocks.
+```text
+build_manifest.json
+metric_contract_frontier.csv
+frontend_metric_series.csv
+metrics_frontier_qa.csv
+frontier_source_qa.csv
+annual_balance_dashboard_metrics.csv
+annual_balance_dashboard_contract.csv
+annual_balance_dashboard_qa.csv
+annual_flow_membership.csv
+artifact_contracts.csv
+source_contract_qa.csv
+```
 
-Producers: `accounting.human.tables`, `accounting.human.document`, and experimental `accounting.human.front`.
-Primary consumers: humans and publish/frontend packaging.
+Producer: `accounting.metrics.build`, delegating to `accounting.metrics.frontier` and `accounting.metrics.annual`.
 
-Governance rule: report factories compose metric, debt, and table contracts. They should not become the place where new ledger canonicalization, core metric formulas, or debt allocation semantics are defined.
+The build explicitly removes the retired generic metric universe on start. `metric_registry.csv`, `metric_values.csv`, generic Q/Y statements, `metric_views/`, and `metric_drilldown/` are not current governed products.
 
-## Level 5 — Frontend/public snapshot
+`artifact_contracts.csv` classifies known artifacts by role, accounting nature, grain, currency policy, frontend suitability, and source authority. `source_contract_qa.csv` verifies the governed handoff and checks that legacy metric outputs have not survived the build.
 
-Primary artifacts:
-
-- `public/accounting/latest/*`.
-- `public/accounting/latest/manifest.json` using schema `accounting_frontend_snapshot.v1`.
-- Frontend-safe `report/`, `metrics/`, and `debt/` subsets.
+## Level 5 — scope-qualified public bundle
 
 Producer: `accounting.publish.latest`.
-Primary consumer: accounting viewer/static frontend surfaces.
 
-Governance rule: the frontend reads the published snapshot. It should not read arbitrary `out/run`, `out/metrics`, `out/debt_resolution`, or `out/human_reports` internals directly.
+Current path:
 
-## Current architectural decisions
+```text
+public/accounting/latest_<SCOPE_TAG>/
+```
 
-- `accounting.debt.resolve` is the current debt resolver; the old `resolve_internal_debt_v2.py` compatibility shim has been removed.
-- `accounting.human.document` is the current human report factory; the old `human_balance_document_factory.py` compatibility shim has been removed.
-- `accounting.human.front` is experimental/future until it has a clear consumer and output contract; the old `human_balance_front_factory.py` compatibility shim has been removed.
-- The metrics subsystem is the most mature contract layer and is the best first candidate for a later compatibility-package refactor.
-- Stage D materialized outputs are authoritative for view construction.
-- Legacy report artifacts are optional compatibility aids, not required pipeline inputs.
+Current top-level contract artifacts:
+
+```text
+manifest.json              # schema accounting_public_bundle.v1
+artifact_contracts.csv
+publish_contract_qa.csv
+```
+
+The bundle classifies files into `public_contract/`, `canonical_dashboard/`, `internal_diagnostic/`, and `unsafe_for_frontend/`. Publication packages existing governed facts; it does not recalculate accounting semantics.
+
+## Level 6 — professional presentation and drilldowns
+
+`accounting.professional.drilldown` and `accounting.professional.render_linked_digest` operate over governed artifacts and an existing professional pack. They may format, select, link, and explain; they may not silently change accounting membership.
+
+## Artifact-role vocabulary
+
+The upstream artifact registry distinguishes roles including `canonical_source`, `canonical_rule_contract`, `diagnostic`, `internal_balance`, `inferred_reconciliation`, `presentation_only`, `legacy`, `unsafe_for_frontend`, `qa`, `meta`, and `derived_valuation`.
+
+The role matters more than physical proximity. A CSV beside canonical facts can still be diagnostic-only or forbidden for frontend use.
+
+## Compatibility rule
+
+Historical files and old documentation routes can remain as migration evidence. Their existence does not recreate a current backend contract.
+
+## Evidence anchors
+
+- upstream `notes/accounting_spine_runbook.md`
+- upstream `notes/output_contracts.md`
+- `accounting/artifacts/manifest.py`
+- `accounting/metrics/build.py`
+- `accounting/publish/latest.py`
+- current Makefile assertions

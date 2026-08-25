@@ -1,24 +1,47 @@
 flowchart TD
-  SRC[Google Sheet / fixture CSV] --> A[A.ingest]
-  A --> LEDGER[ledger_canonical.csv]
-  A --> ANOM[anomalies.csv]
-  A --> META_A[meta/stage_A_ingest.json + artifacts.jsonl]
+  SRC[Approved live/fixture input] --> INGEST[accounting.ledger.ingest]
+  INGEST --> LEDGER[ledger_canonical.csv]
+  INGEST --> ALLSTATUS[ledger_canonical_all_status.csv]
 
-  LEDGER --> D[D.materialize]
-  D --> PF[per_flow_time_long.freq=F.csv]
-  D --> PP[per_party_time_long.freq=F.csv]
-  D --> LOANS[loans_time.freq=M.csv]
-  D --> CASH[daily_cash_position.csv]
-  D --> PART[partitions.json]
-  D --> META_D[meta/stage_D_materialize.json + artifacts.jsonl]
+  LEDGER --> MAT[governed materialization]
+  MAT --> SEM[monthly_flow_semantic_split.csv]
+  MAT --> OPS[monthly_operating_statement.csv + QA]
+  MAT --> CASH[monthly_cash_close.csv + QA]
+  MAT --> DIAG[Stage-D diagnostic/internal evidence]
 
-  PF --> E[E.reports]
-  PP --> E
-  CASH --> E
-  E --> FONDOS[fondos_report.csv]
-  E --> RENTA[renta_*.csv]
-  E --> META_E[meta/stage_E_reports.json + artifacts.jsonl]
+  ALLSTATUS --> DEBTENG[accounting.debt.resolve + balance_views]
+  DEBTENG --> DEBTEVID[open items / allocations / repayment / balance evidence]
+  DEBTEVID --> DEBTMART[accounting.marts.debt]
+  DEBTMART --> DEBTPOS[monthly_debt_position.csv + QA]
+  DEBTMART --> DEBTACT[monthly_debt_activity.csv + QA]
+  DEBTPOS --> TREAS[treasury/accountability]
+  DEBTACT --> TREAS
 
-  PF --> V[views.py / notebook EDA]
-  PP --> V
-  CASH --> V
+  SEM --> FRONTIER[accounting.metrics.frontier]
+  OPS --> FRONTIER
+  CASH --> FRONTIER
+  DEBTPOS --> FRONTIER
+  DEBTACT --> FRONTIER
+  FRONTIER --> MCONTRACT[metric_contract_frontier.csv]
+  FRONTIER --> MSERIES[frontend_metric_series.csv]
+
+  FRONTIER --> ANNUAL[accounting.metrics.annual]
+  ANNUAL --> ADASH[annual dashboard metrics + contract + QA]
+  ANNUAL --> MEMBERS[annual_flow_membership.csv]
+
+  MCONTRACT --> PUB[accounting.publish.latest]
+  MSERIES --> PUB
+  ADASH --> PUB
+  SEM --> PUB
+  OPS --> PUB
+  CASH --> PUB
+  DEBTPOS --> PUB
+  DEBTACT --> PUB
+  PUB --> BUNDLE[public/accounting/latest_SCOPE/ accounting_public_bundle.v1]
+
+  FRONTIER --> PROF[professional pack / governed drilldowns]
+  ANNUAL --> PROF
+  MEMBERS --> PROF
+
+  DIAG -. audit only .-> PROF
+  DEBTEVID -. audit only / unsafe for frontend .-> PROF

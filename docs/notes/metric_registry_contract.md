@@ -1,214 +1,171 @@
 ---
 title: "Metric Registry Contract"
-sidebar_label: "Metric registry"
+sidebar_label: "Metric contract"
 sidebar_position: 20
-description: "Contract for metric IDs, leaf and derived metrics, builders, validation levels, and safe metric expansion."
+description: "Route-preserving contract for the current governed metric frontier, frontend series, annual dashboard, and lineage authority."
 doc_type: "contract"
 ---
 
-# Metric Registry Contract
+# Governed Metric Contract
 
-This document defines the governance contract for accounting metrics.
+Status: current contract; route name preserved from retired registry architecture  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
-Metrics are the stable middle layer between canonical accounting data and human-facing reports. Human reports should consume metric values or approved report tables, not recompute business logic from raw ledger rows.
+## Route compatibility note
 
-## Purpose
+This page remains at `/notes/metric_registry_contract` to preserve links. The old `metric_registry.csv` architecture is retired. The current contract is the governed metric frontier plus its series, QA, annual dashboard, and lineage outputs.
 
-The metric registry should answer:
-
-* Which metrics exist?
-* How is each metric named?
-* Is the metric directly built from data or derived from other metrics?
-* Which builder owns the metric?
-* Which dimensions and periods are valid?
-* Which validation checks protect it?
-* How can a new metric be safely added?
-
-## Metric ID naming
-
-A metric ID should be stable, explicit, and composable.
-
-Recommended pattern:
+## Current producer chain
 
 ```text
-DOMAIN.GROUP.MEASURE[.DETAIL]
+governed monthly semantic/cash/debt facts
+  -> accounting.metrics.frontier
+       -> metric_contract_frontier.csv
+       -> frontend_metric_series.csv
+       -> metrics_frontier_qa.csv
+       -> frontier_source_qa.csv
+  -> accounting.metrics.annual
+       -> annual_balance_dashboard_metrics.csv
+       -> annual_balance_dashboard_contract.csv
+       -> annual_balance_dashboard_qa.csv
+       -> annual_flow_membership.csv
 ```
 
-Examples:
+`accounting.metrics.build` orchestrates these outputs and writes the build/source artifact contracts.
+
+## Frontier contract schema
+
+`metric_contract_frontier.csv` carries fields including:
 
 ```text
-IS.RENT.TOTAL
-IS.COSTS.TOTAL
-BS.CASH.TOTAL
-CF.NET.TOTAL
-ID.DEBT.OPEN_BALANCE
-ID.DEBT.REPAID
-QA.LEDGER.ROW_COUNT
+metric_id
+label
+semantic_category
+flow_or_stock
+period_grain
+currency_mode
+source_table
+calculation_rule
+lineage_inputs
+frontend_suitability
+public_flag
+internal_flag
+legacy_flag
+caveat
+validation_status
+owner
+status
+notes
 ```
 
-Suggested domains:
+A metric contract therefore says not only what a metric is called, but where it comes from, whether it is flow/stock/quality/mixed, its currency/grain, suitability, caveats, and validation state.
 
-| Domain | Meaning                   |
-| ------ | ------------------------- |
-| `IS`   | Income statement          |
-| `BS`   | Balance sheet / snapshot  |
-| `CF`   | Cash flow                 |
-| `ID`   | Internal debt             |
-| `HH`   | Household                 |
-| `QA`   | Data quality              |
-| `META` | Runtime/artifact metadata |
+## Series schema
 
-Metric IDs are contracts. Renaming a metric should be treated as a breaking change unless an alias/migration layer exists.
+`frontend_metric_series.csv` carries fields including:
 
-## Leaf vs derived metrics
+```text
+metric_id
+period_grain
+period
+period_end
+Currency
+value
+dimension_name
+dimension_value
+source_table
+run_id
+as_of_date
+frontend_suitability
+public_flag
+internal_flag
+legacy_flag
+caveat
+validation_status
+```
 
-### Leaf metric
+Money rows retain explicit native `Currency`. Dimensioned series carry explicit dimension name/value rather than encoding hidden grouping logic in labels.
 
-A leaf metric is computed directly from canonical artifacts or approved views.
+## Canonical monthly sources
 
-Examples:
+The current frontier is intentionally restricted to:
 
-* rent collected from canonical ledger view;
-* cash balance from daily cash position;
-* open debt balance from debt balance view.
+```text
+monthly_operating_statement.csv
+monthly_flow_semantic_split.csv
+monthly_cash_close.csv
+monthly_debt_position.csv
+monthly_debt_activity.csv
+```
 
-A leaf metric must declare:
+It does not load a generic marts/views layer, `metric_registry.csv`, or `metric_values.csv`.
 
-* source artifact or view;
-* filters;
-* aggregation rule;
-* dimensions;
-* period grain;
-* null behavior.
+## Availability and fail-closed behavior
 
-### Derived metric
+When a required canonical source is missing, the frontier can mark affected contracts unavailable rather than fabricating a value. Cash selection also respects the governed validated-cash eligibility contract; inferred/internal balance artifacts are not a fallback.
 
-A derived metric is computed from other metric IDs.
+## Current metric families
 
-Examples:
+The current frontier includes governed families for operating revenue/rent, true property OPEX, net operating result, funding, personal draws/distributions, coverage, validated cash, debt stock, classification quality, and treasury FX. Exact active IDs and calculation rules are executable authority in `accounting.metrics.frontier` and its tests.
 
-* net operating result = rent total - cost total;
-* debt exposure ratio = open debt / cash;
-* retained amount = contribution - draw.
+Do not add IDs or semantics to this page merely because they sound economically useful.
 
-A derived metric must declare:
+## Annual contract
 
-* input metric IDs;
-* formula;
-* behavior when inputs are missing;
-* validation expectations.
+The annual dashboard is not a second metric universe. It projects governed monthly facts under annual aggregation rules:
 
-## Builders
+- flows aggregate governed monthly membership;
+- closing stocks use the latest governed valid position;
+- ratios derive from governed annual inputs unless an explicit contract says otherwise;
+- native currency remains separate.
 
-A metric builder is the only place where a metric family should be computed.
+`annual_flow_membership.csv` supplies explicit lineage for additive annual flow cells and is important drilldown evidence.
 
-Builders may read:
+## Derived-metric authority
 
-* canonical ledger;
-* approved marts/views;
-* debt resolver outputs;
-* previous metric values for derivations;
-* runtime metadata needed for QA.
+Derived metric behavior is additionally governed by typed contracts under `accounting/contracts/derived_metrics.py`. A derived value must use approved inputs/formulas and fail visibly when required inputs are unavailable.
 
-Builders should not read:
+## QA and source contracts
 
-* human report HTML;
-* frontend snapshots;
-* ad hoc manually edited outputs;
-* old storypack artifacts unless explicitly in legacy mode.
+Current QA/artifact files include:
 
-## Registry fields
+```text
+metrics_frontier_qa.csv
+frontier_source_qa.csv
+annual_balance_dashboard_qa.csv
+artifact_contracts.csv
+source_contract_qa.csv
+build_manifest.json
+```
 
-A registry entry should ideally track:
+The build checks that governed sources are used and that retired generic metric outputs are absent.
 
-| Field              | Meaning                                   |
-| ------------------ | ----------------------------------------- |
-| `metric_id`        | Stable identifier                         |
-| `title`            | Human-readable name                       |
-| `domain`           | IS, BS, CF, ID, HH, QA, META              |
-| `builder_key`      | Builder that owns the metric              |
-| `grain`            | daily, monthly, quarterly, yearly, latest |
-| `dimensions`       | Allowed breakdown fields                  |
-| `source`           | Source artifact or view                   |
-| `agg_rule`         | Sum, last, count, ratio, derived          |
-| `currency`         | ARS, USD, mixed, none                     |
-| `is_derived`       | Whether metric depends on other metrics   |
-| `validation_level` | hard, warning, info                       |
+## Retired metric universe
 
-The implementation can keep this compact, but these concepts should exist somewhere.
+`accounting.metrics.build` actively removes these compatibility artifacts when rebuilding governed metrics:
 
-## Validation levels
+```text
+metric_registry.csv
+metric_values.csv
+metric_values.parquet
+metric_values_q_wide.csv
+metric_values_y_wide.csv
+generic Q/Y statements
+validation_report.csv
+metric_views/
+metric_drilldown/
+```
 
-| Level     | Meaning                                          |
-| --------- | ------------------------------------------------ |
-| `hard`    | Build should fail or artifact should not publish |
-| `warning` | Build may complete but must surface the issue    |
-| `info`    | Useful metadata, not a correctness problem       |
+Their historical existence does not make them current contracts.
 
-Hard errors should protect contracts:
+## Adding or changing a metric
 
-* duplicate metric ID;
-* missing required source;
-* invalid grain;
-* impossible negative value when forbidden;
-* duplicate dimensional keys;
-* currency mismatch;
-* derived metric missing required inputs.
-
-Warnings should expose review needs:
-
-* empty slice;
-* unexpected new category;
-* null value after aggregation;
-* unallocated debt repayment;
-* stale source artifact.
-
-## Adding a new metric safely
-
-Use this checklist:
-
-1. Define the human question the metric answers.
-2. Choose the metric ID.
-3. Decide if it is leaf or derived.
-4. Identify the source artifact or input metric IDs.
-5. Define grain and dimensions.
-6. Define aggregation rule.
-7. Add registry entry.
-8. Add or extend builder.
-9. Add validation.
-10. Add at least one small fixture or smoke expectation.
-11. Export metric values.
-12. Only then expose it in human reports.
-
-Do not add metrics directly inside human report factories.
-
-## Ownership boundaries
-
-| Layer         | Responsibility                        |
-| ------------- | ------------------------------------- |
-| Ledger        | Canonical raw event semantics         |
-| Marts/views   | Useful normalized slices              |
-| Metrics       | Stable values and derivations         |
-| Debt resolver | Debt-specific allocation and balances |
-| Human reports | Selection, labels, narrative, display |
-| Frontend      | Consumption and navigation            |
-| Publish       | Latest and snapshot contracts         |
-
-## Known risks
-
-| Risk                                             | Consequence                 |
-| ------------------------------------------------ | --------------------------- |
-| Metric computed twice in two places              | Drift between reports       |
-| Human layer reads raw ledger                     | Hidden business logic       |
-| Metric IDs renamed casually                      | Broken downstream consumers |
-| Missing validation                               | Silent bad numbers          |
-| Builders depend on old artifacts                 | Stale reports               |
-| Derived metrics tolerate missing inputs silently | False confidence            |
+A safe change must identify the governing source artifact and semantic rule, preserve native currency/grain, add/update regression evidence, measure before/after effects, reconcile affected annual/public/professional outputs, and avoid duplicating the metric in presentation code.
 
 ## Related docs
 
-* `/notes/ledger_taxonomy`
-* `/notes/debt_resolver_contract`
-* `/notes/output_contracts`
-* `/notes/human_report_catalog`
-EOF
+- `/notes/output_contracts`
+- `/notes/contracts`
+- `/notes/ledger_taxonomy`
+- `/notes/debt_resolver_contract`
