@@ -1,24 +1,39 @@
 # Accounting Workflows Documentation
 
-Public documentation and operating handbook for the accounting workflow estate.
+Public operating and contract documentation for the governed accounting workflow estate.
 
 > **Lifecycle:** active documentation and publication surface  
-> **Authority:** operating guidance, contracts, report catalogs, and recovery playbooks  
-> **Not authoritative for:** ledger data, source documents, pipeline execution, or generated accounting outputs  
-> **README evidence reviewed:** 2026-08-03 — repository configuration and source files; live deployment was not rechecked
+> **Authority:** curated operating guidance, architecture explanations, contract documentation, and documentation-site structure  
+> **Not authoritative for:** ledger records, accounting calculations, source documents, viewer implementation, runtime success, or live publication freshness  
+> **Architecture evidence reviewed:** 2026-08-25 against `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
-## Purpose
+## Current system model
 
-This repository turns the accounting system's operating knowledge into a navigable Docusaurus site. It is the front door for people who need to understand:
+The current supported backend spine is:
 
-- how the workflows are organized;
-- which output contracts consumers can rely on;
-- where published reports and tables belong;
-- how to begin operating or diagnosing the system;
-- what to do during the first minutes of an incident;
-- how documentation changes are governed.
+```text
+canonical ledger ingest
+  -> governed materialization
+       -> semantic flow facts
+       -> operating statement
+       -> validated cash facts
+  -> debt position/activity + treasury
+  -> governed monthly frontier + annual dashboard
+  -> publication bundle
+  -> professional presentation + governed drilldowns
+```
 
-It is intentionally separate from the pipelines that ingest documents, build ledgers, calculate metrics, and publish report bundles. Documentation may describe those processes, but it does not execute them.
+Generic `accounting.views` / `run-marts`, the parallel `metric_values` engine, and `accounting.human.*` report authority are retired as current accounting layers. Historical or compatibility references may remain in older pages while the governed-spine documentation refresh proceeds, but they are not current authority.
+
+## Repository boundaries
+
+`matuteiglesias/accounting-workflows` owns canonical transformations, accounting business-rule implementation, governed reporting calculations, professional packs, drilldowns, and publication bundle generation.
+
+`matuteiglesias/accounting-viewer` owns viewer-specific read-only presentation over approved packaged outputs.
+
+This repository, `matuteiglesias/accounting-docs`, owns the published guidance that explains those systems. It does not calculate accounting results and must not invent accounting, legal, ownership, or family-governance meaning.
+
+When documentation conflicts with current executable behavior, current `accounting-workflows` tests, typed contracts, authority modules, Makefile, `AGENTS.md`, and `SYSTEM.yaml` outrank stale prose.
 
 ## Publication surface
 
@@ -29,79 +44,52 @@ The site is configured for:
 - **Documentation route:** `/notes`
 - **Primary source directory:** `docs/notes/`
 
-The configured URL identifies the intended publication surface. Check the deployed site independently before treating its availability or contents as current.
+The configured URL identifies the intended publication surface. Deployment availability and freshness must be checked independently before being treated as current.
 
 ## Recommended entrances
 
-Within the documentation site, start with:
+For the current architecture and migration authority, start with:
 
-1. **Foundations** — system purpose and conceptual model.
-2. **Operator start** — practical operating orientation.
-3. **Output contracts** — expected files, schemas, and consumer boundaries.
-4. **Incident first 15 minutes** — bounded first-response guidance.
-5. **Latest outputs / consumer guide** — how downstream users locate published material.
+1. **Start here** — `/notes/intro`
+2. **Current state** — `/notes/current_state_map`
+3. **Foundations** — `/notes/library/foundations/index`
+4. **Governed-spine truth baseline** — `/notes/library/governance/governed-spine-truth-baseline`
+5. **Documentation refresh program** — `/notes/library/governance/governed-spine-docs-refresh-program`
 
-The navigation and footer in `docusaurus.config.ts` encode the current canonical routes.
+Operator, contract, consumer, automation, and historical pages are being refreshed sequentially. Until their wave lands, treat current executable upstream authority as controlling when older pages disagree.
 
-## Repository boundaries
-
-### This repository owns
-
-- curated accounting-system documentation;
-- operator and consumer guidance;
-- documentation of output, ledger, debt, and metric contracts;
-- report catalogs and publication conventions;
-- incident and recovery playbooks;
-- the source and configuration of the documentation website.
-
-### This repository does not own
-
-- raw financial or source-document ingestion;
-- canonical ledger records;
-- transformations or accounting calculations;
-- generated professional packs and drilldowns;
-- credentials, production runtime state, or private source documents;
-- the operational truth that a pipeline or deployment currently succeeds.
-
-When documentation and executable behavior disagree, verify the executable system and then repair the documentation.
-
-## Local development
+## Local documentation development
 
 Requirements:
 
 - Node.js 20 or newer;
-- Yarn.
+- npm-compatible dependency installation from `package.json` / the repository lockfile.
+
+Useful commands:
 
 ```bash
-yarn
-yarn start
+npm run start
+npm run typecheck
+npm run build
 ```
 
-The local development server supports live reload.
-
-Useful checks:
-
-```bash
-yarn typecheck
-yarn build
-yarn serve
-```
-
-`yarn build` is the minimum repository-level verification before merging documentation or configuration changes.
+The governed refresh protocol requires `npm run typecheck` and `npm run build` before a docs-refresh PR when the execution environment permits them.
 
 ## Editing guidance
 
 - Edit documentation under `docs/notes/`.
-- Preserve stable routes when other documents or operational procedures link to them.
-- Distinguish verified behavior from intended or historical behavior.
-- Use exact dates for data cutoffs, deployment checks, and runtime verification.
-- Do not commit source documents, secrets, private financial records, or generated report bundles merely to make the docs self-contained.
-- Treat generated outputs as downstream evidence, not as hand-maintained documentation.
+- Preserve stable public routes unless retirement is explicit and justified.
+- Distinguish CURRENT, STALE, HISTORICAL, COMPATIBILITY, INTENDED, and UNKNOWN claims.
+- Do not commit source documents, secrets, private financial records, or generated accounting bundles merely to make docs self-contained.
+- Treat generated outputs as evidence from a run, not as hand-maintained authority.
+- Do not infer legal rights, ownership, negotiation positions, or family intentions from accounting classifications.
 
-## Related system
+## Governance
 
-The public workflow repository is [`accounting-workflows`](https://github.com/matuteiglesias/accounting-workflows). This documentation repository describes the broader accounting system but remains a separate publication surface with its own review and build lifecycle.
+The governed-spine refresh is controlled by root `AGENTS.md` and:
 
-## Current verification boundary
+- `docs/notes/library/90-governance/92-governed-spine-truth-baseline.md`
+- `docs/notes/library/90-governance/93-governed-spine-docs-refresh-program.md`
+- `docs/notes/library/90-governance/94-autonomous-doc-pr-protocol.md`
 
-The Docusaurus configuration, scripts, routes, and documentation structure were inspected for this README update. No accounting pipeline, production deployment, data freshness, or external link availability was executed or asserted as verified.
+The upstream commit above is the factual baseline for this architecture cutover only. Future documentation changes must re-check current `accounting-workflows/main` rather than treating that SHA as permanent truth.

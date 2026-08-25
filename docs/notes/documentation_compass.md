@@ -2,105 +2,85 @@
 title: "Documentation Compass"
 sidebar_label: "Docs compass"
 sidebar_position: 2
-description: "Explains how humans and agents should navigate, maintain, and extend the accounting documentation."
+description: "Explains how humans and agents should navigate the governed accounting documentation during the staged refresh."
 doc_type: "guide"
 ---
 
-
 # Documentation Compass (Humans + Agents)
 
-Status: current guidance
-Last reviewed: 2026-05-21
+Status: current migration guidance  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
-## Why this exists
+## Migration status
 
-The repository has many strong documents, but they are distributed and optimized for different audiences. This compass is the entrypoint that tells each user where to go first, depending on the task.
+The top-level architecture and foundations pages have been cut over to the governed-spine model. Operator commands, artifact contracts, consumer/professional guidance, automation, and historical cleanup are separate later waves in the active refresh program.
+
+Until those waves land, a downstream page may still contain historical architecture. Current `accounting-workflows` executable tests, typed contracts, authority modules, Makefile, `AGENTS.md`, and `SYSTEM.yaml` outrank stale prose.
 
 ## Start here by role
 
-### 1) Operator ("I need the system to run reliably")
+### Operator
 
-Read in this order:
-1. `notes/human_agent_playbook.md` (incident-first triage and failure taxonomy)
-2. `notes/accounting_spine_runbook.md` (official stage order + required outputs)
-3. `notes/canonical_commands.md` (current command surface)
-4. `notes/frontend_snapshot_contract.md` (what publish must deliver)
+Read first:
 
-Primary commands:
-- `make help`
-- `make doctor`
-- `make build-report`
-- `make publish-latest`
+1. [Current state map](./current_state_map.md)
+2. [Backend truth baseline](./library/90-governance/92-governed-spine-truth-baseline.md)
+3. `notes/accounting_spine_runbook.md` and `notes/canonical_commands.md` only with the understanding that their dedicated command-surface refresh is the next wave.
 
-### 2) Developer ("I need to change code safely")
+For current command names, check the upstream Makefile before live or consequential execution.
 
-Read in this order:
-1. `notes/current_state_map.md` (architecture and boundaries)
-2. `notes/module_inventory.md` (module ownership)
-3. `notes/output_contracts.md` (artifact-level contracts)
-4. `notes/entrypoints.md` (canonical vs support vs legacy surfaces)
+### Developer / agent
 
-Primary goal: preserve artifact contracts and avoid accidental coupling across layers.
+Read first:
 
-### 3) Analyst / stakeholder ("I need useful outputs")
+1. root `AGENTS.md`
+2. [Current state map](./current_state_map.md)
+3. [Autonomous documentation PR protocol](./library/90-governance/94-autonomous-doc-pr-protocol.md)
+4. the current upstream authority relevant to the change
 
-Read in this order:
-1. `notes/narrative.md` (business stories and reporting intent)
-2. `notes/contracts.md` (domain rules/contracts)
-3. `notes/frontend_snapshot_contract.md` (stable consumer surface)
+Do not preserve a retired layer merely because an older document or filename mentions it.
 
-Primary outputs:
-- human report HTML under `out/human_reports/<RUN_ID>/...`
-- published snapshot under `public/accounting/latest/*`
+### Analyst / stakeholder / report consumer
 
-### 4) Coding agent ("I need to diagnose and act fast")
+Read first:
 
-Read in this order:
-1. `notes/human_agent_playbook.md`
-2. `notes/entrypoints.md`
-3. `notes/accounting_spine_runbook.md`
-4. `notes/output_contracts.md`
+1. [Current state map](./current_state_map.md)
+2. [Foundations](./library/00-foundations/00-index.md)
+3. consumer pages under `library/30-consumers/` with caution until the consumer/professional refresh wave is merged
 
-Agent rule of thumb:
-- Prefer canonical `make` targets over legacy aliases unless compatibility behavior is explicitly required.
+Accounting labels are reporting classifications. They do not establish legal ownership, rights, enforceability, or family-governance conclusions.
 
-## High-level abstractions (what users should think in)
+### Automation steward
 
-The system should be operated using these abstractions, not low-level scripts:
+Read first:
 
-1. **Pipeline layers**: ledger -> materialize -> views/debt -> metrics -> human report -> publish
-2. **Contracts**: each layer must emit required artifacts (CSV/JSON/HTML) with known names
-3. **Surfaces**:
-   - producer surfaces in `out/...`
-   - consumer-safe surface in `public/accounting/latest/*`
-4. **Modes**:
-   - smoke mode for fixture/offline confidence
-   - run mode for live/real inputs
+1. [Backend truth baseline](./library/90-governance/92-governed-spine-truth-baseline.md)
+2. the current upstream Makefile
+3. automation pages under `library/20-automation/` only with the explicit concurrency limitation in mind
 
-## Periodic automation vision (documented expectations)
+Do not assume overlapping same-scope runs are supported while upstream issue #44 remains unresolved.
 
-For autonomous periodic reporting to be dependable, docs must explicitly define:
+## High-level abstractions
 
-1. **Scheduler wiring**: exact systemd unit/timer or cron command and working directory.
-2. **Environment contract**: Python version, dependency install command, required env vars.
-3. **Run cadence and SLOs**: how often to run, acceptable latency/failure windows.
-4. **Failure routing**: where failures appear (journal/log path) and who is paged.
-5. **Recovery sequence**: exact commands for first response (`make doctor`, `make smoke`, targeted rebuild).
+Use these current abstractions:
 
-This repo already defines much of (4)-(5); (1)-(3) need a single authoritative document.
+1. **Governed spine:** ledger ingest -> governed materialization -> debt/treasury -> governed frontier + annual dashboard -> publication -> professional presentation/drilldowns.
+2. **Authority:** executable upstream behavior and contracts outrank documentation copies of the model.
+3. **Runs and outputs:** generated artifacts are evidence from a specific run, not permanent semantic authority.
+4. **Repository boundaries:** workflows calculates; viewer presents; docs explains.
+5. **Safety classes:** fixture-safe validation and live/consequential execution must remain distinct.
 
-## Next documentation upgrades (highest ROI)
+## Retired architecture warning
 
-1. Add `notes/automation_wiring_spec.md` with copy-paste unit/timer/cron examples and required env.
-2. Add `notes/environment_bootstrap.md` with deterministic setup (venv, install, sanity command).
-3. Add `notes/report_consumer_guide.md` explaining which outputs each audience should use and ignore.
-4. Add a "docs freshness" check in CI (or local validation target) to catch stale command names.
+Generic `accounting.views` / `run-marts`, the parallel `metric_values` engine, and `accounting.human.*` report authority are not current layers. Historical or compatibility references may remain during migration but must not be treated as required current stages.
 
-## Note on legacy docs
+## Active documentation program
 
-`notes/runbook.md` contains historical material that overlaps with newer authority docs.
-Prefer `notes/accounting_spine_runbook.md`, `notes/output_contracts.md`, and this compass for current operations decisions.
+The current execution authority for documentation work is:
 
-## Documentation library (numbered)
+- [Governed-spine truth baseline](./library/90-governance/92-governed-spine-truth-baseline.md)
+- [Governed-spine documentation refresh program](./library/90-governance/93-governed-spine-docs-refresh-program.md)
+- [Autonomous documentation PR protocol](./library/90-governance/94-autonomous-doc-pr-protocol.md)
 
-The hierarchical library lives under `notes/library/` with numbered sections (`00`-`99`) for predictable navigation and future growth. Start at `/notes/library/foundations/index`.
+The older `docs_execution_plan.md` is retained as a route-preserving historical planning record and is no longer the active sequence.

@@ -2,123 +2,110 @@
 title: "Current State Map"
 sidebar_label: "Current state"
 sidebar_position: 3
-description: "Summarizes the current accounting backend architecture, active components, and known boundaries."
+description: "Summarizes the current governed accounting backend architecture, authority boundaries, and retired layers."
 doc_type: "inventory"
 ---
 
-
 # Accounting Backend Current State Map
 
-Status: authority draft
-Last reviewed: 2026-05-10
+Status: current architecture reference  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
 ## Purpose
 
-The accounting backend converts messy household/property accounting records into validated financial views, debt-resolution artifacts, human-readable reports, and frontend-ready snapshots.
+This page gives the top-level mental model for the current governed backend. It describes architecture and authority boundaries; detailed command, artifact, consumer, and automation contracts are refreshed in later waves and must be checked against current upstream authority when they disagree with this page.
 
-The current system should be understood as this artifact ladder:
-
-```text
-source inputs
-  → canonical ledger
-  → materialized analytical artifacts
-  → metric/debt contracts
-  → human report surfaces
-  → frontend snapshot
-```
-
-This document names the current layers and decisions before any package movement. The goal is legibility and reduced accidental coupling, not aesthetic folder tidiness.
-
-## Current pipeline spine
+## Supported backend spine
 
 ```text
-Google Sheet / fixture CSV / local export
-  → accounting.ledger.ingest
-      ledger_canonical.csv
-      ingest anomalies
-  → accounting.stage_d.materialize
-      per_flow_time_long.freq=*.csv
-      per_party_time_long.freq=*.csv
-      daily_cash_position.csv
-      Stage D/materialization metadata
-  → accounting.views
-      current view tables built from Stage D outputs
-  → accounting.debt.resolve
-      debt_open_items.csv
-      debt_allocations.csv
-      debt_repayment_events.csv
-      debt_resolution_timeline.csv
-      debt_status_reconciliation.csv
-  → accounting.debt.balance_views
-      debt_balance_daily.csv
-      debt_balance_monthly.csv
-      debt_balance_quarterly.csv
-      debt_balance_yearly.csv
-  → accounting.metrics.build
-      metric_values.csv
-      metric_registry.csv
-      validation_report.csv
-      metric_views/*
-      metric_drilldown/*
-      build_manifest.json
-  → accounting.human.document
-      balance_humano_v2.html
-      story_manifest.json
-      human-readable report assets
-  → accounting.publish.latest
-      public/accounting/latest/*
-      frontend-safe manifest and selected artifacts
+approved accounting input
+  -> canonical ledger ingest
+  -> governed materialization
+       -> semantic flow facts
+       -> monthly operating statement
+       -> validated cash facts + QA
+  -> debt position/activity + treasury
+  -> governed monthly frontier
+  -> annual dashboard / governed annual lineage
+  -> publication bundle
+  -> professional presentation + governed drilldowns
 ```
 
-The Makefile currently orchestrates this as live `run-*` targets and now exposes shorter canonical aliases such as `ledger`, `materialize`, `debt`, `metrics`, `human-report`, and `publish`.
+The current upstream Makefile declares the official execution path as:
 
-## Layer responsibilities
+```text
+run-ingest -> run-materialize -> run-debt-views -> run-metrics -> run-dashboard -> publish-latest
+```
 
-### Source inputs
+`run-debt-views` remains the command name, but the current architecture is debt resolution/position/activity authority; it is not evidence that a retired generic views layer remains part of the pipeline.
 
-Responsible for external records only: Google Sheets, fixtures, raw CSVs, and manual exports. These inputs are intentionally not stable contracts.
+## Authority boundaries
 
-### Canonical ledger
+| Area | Current authority | Boundary |
+|---|---|---|
+| Canonical ledger | `accounting-workflows` ledger ingest | Docs describe the contract; docs do not classify source records independently. |
+| Semantic materialization | governed semantic/cash materialization and contracts | Operating revenue, funding, OPEX, draws, unknown/review-required, cash, currency, and scope follow executable rules. |
+| Cash | validated cash artifacts and QA | No silent fallback to inferred/internal balances. |
+| Debt | debt position/activity authorities | Position is stock; activity is flow. |
+| Treasury / FX | governed treasury and valuation authorities | Native currencies remain separate unless an explicit valuation/reporting layer applies. |
+| Monthly metrics | governed frontier | No parallel legacy metric universe is current authority. |
+| Annual metrics | annual dashboard plus governed monthly lineage | Flows aggregate governed membership; stocks use closing-position semantics. |
+| Publication | current publication contract | Generated bundles are outputs from a run, not hand-maintained truth. |
+| Professional reporting | professional pack and governed drilldowns | Drilldowns must reconcile displayed values to explicit governed membership. |
+| Viewer presentation | `accounting-viewer` | Viewer-specific UI behavior is outside this repository and outside `accounting-workflows`. |
+| Public guidance | `accounting-docs` | Explanation only; calculations and accounting-rule authority remain upstream. |
 
-`accounting.ledger.ingest` is responsible for turning source records into canonical ledger rows; the old `accounting.ingest` compatibility wrapper has been removed. Its stable internal contract includes columns such as `tx_id`, `Date`, `amount`, `Currency`, `payer`, `receiver`, `Flujo`, `Tipo`, `status`, `Box`, `source_file`, `source_row`, `ingest_ts`, and notes/anomaly metadata.
+## Retired or compatibility-only concepts
 
-### Materialized analytical artifacts
+The following are not current accounting authorities:
 
-`accounting.stage_d.materialize` is responsible for CSV-first analytical tables derived from the canonical ledger; the old `accounting.materialize` compatibility wrapper has been removed. `accounting.views` remains a support bridge for view tables; the doctrine is that Stage D materialized artifacts are source-of-truth for views.
+- a generic `accounting.views` or `run-marts` stage between materialization and metrics;
+- `metric_values.csv` as a parallel metric engine;
+- `metric_registry.csv` plus legacy metric views as the primary current reporting universe;
+- `accounting.human.document`, `accounting.human.tables`, or other `accounting.human.*` modules as the current report-calculation authority;
+- Wave-4/legacy drilldown routing as an independent semantic authority.
 
-### Metric/debt contracts
+Compatibility code or historical documentation may still mention some of these shapes. Such references must be visibly bounded as historical/compatibility and must not be used to reconstruct a retired parallel pipeline.
 
-The metrics subsystem is the most mature contract layer today. Its canonical implementation now lives under `accounting.metrics` (`io`, `registry`, `builders`, `derive`, `validate`, `views`, `drilldown`, and `build`), while the old flat module compatibility wrappers have been removed.
+## Repository responsibilities
 
-Debt resolution is also a named contract layer. `accounting.debt.resolve` is the current debt resolver, and `accounting.debt.balance_views` derives time-series debt balance artifacts from debt open items. The old flat human compatibility module paths have been removed; use the `accounting.human.*` package paths directly.
+### `accounting-workflows`
 
-### Human/report surfaces
+Owns canonical accounting transformation and reporting workflow, accounting business-rule implementation, professional pack/drilldown artifacts, and publication generation.
 
-`accounting.human.tables` defines reusable human-facing table specs and builders. `accounting.human.document` is the current human report factory. `accounting.human.front` is future/experimental and should not be promoted to production until its output and consumer are clear. The old flat human compatibility module paths have been removed; use the `accounting.human.*` package paths directly.
+### `accounting-viewer`
 
-### Frontend snapshot
+Owns viewer-specific read-only presentation over an approved packaged snapshot. Viewer behavior must be verified from that repository before being documented as current.
 
-`accounting.publish.latest` packages selected latest metrics, debt, and human report artifacts into `public/accounting/latest/*`; the old `publish_latest.py` compatibility shim has been removed. The frontend should consume this snapshot instead of internal producer directories.
+### `accounting-docs`
 
-## Current decisions
+Owns public operating guidance, contract explanation, architecture documentation, and the documentation-site structure. It does not own ledger data, calculations, runtime success, or live publication freshness.
 
-| Decision | Current authority |
-|---|---|
-| Debt resolver | `accounting.debt.resolve` |
-| Human report factory | `accounting.human.document` |
-| Front report factory | `accounting.human.front` is experimental/future |
-| Metrics layer | Most mature contract layer; safest first code refactor candidate later |
-| View source of truth | Stage D materialized outputs |
-| Legacy report artifacts | Optional compatibility only |
-| Frontend handoff | `accounting.publish.latest` writes `public/accounting/latest/*` with `accounting_frontend_snapshot.v1` manifest |
+## Accounting invariants this architecture must not blur
 
-## Known coupling risks
+- Household/personal expenditure is not property OPEX merely because money left a managed box.
+- Funding is not operating revenue.
+- Core contribution and broader typed support are distinct governed concepts.
+- Debt position is stock; debt activity is flow.
+- Validated cash does not silently fall back to inferred cash.
+- Native currencies remain separate unless an explicit valuation layer is invoked.
+- Annual flows retain governed monthly lineage; annual stock uses closing-position semantics.
+- Unknown or ambiguous semantic rows fail closed/review-required rather than being forced into convenient categories.
+- Professional drilldowns must reconcile to displayed cells without semantic leakage.
+- Accounting classifications do not decide legal ownership, rights, enforceability, inheritance, or family governance.
 
-- Report factories can become business-logic dumps if new metric formulas or debt allocation logic are added there.
-- Some modules infer candidate paths dynamically for convenience; docs and Make targets should identify the preferred paths.
-- `views.py` is a transitional support bridge between materialized artifacts and higher-level report/metric consumers.
-- `accounting.human.front` should remain experimental until it has a stable consumer and contract.
+## Known operational boundary
 
-## Migration posture
+Upstream concurrency issue `accounting-workflows#44` remains unresolved at this baseline. Overlapping same-scope runs are therefore not a supported assumption.
 
-Do not begin by moving all modules. First keep these documents and Makefile commands authoritative. Later migrations should introduce package folders only where the boundaries are already proven, starting with metrics.
+## Evidence anchors
+
+Architecture claims on this page were checked against current upstream:
+
+- `accounting-workflows/AGENTS.md`
+- `accounting-workflows/SYSTEM.yaml`
+- `accounting-workflows/Makefile`
+- governed-spine truth baseline in this repository
+
+The upstream commit above is a source-verification baseline, not proof of a fresh live run or deployment.
