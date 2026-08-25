@@ -5,7 +5,7 @@ Public operating and contract documentation for the governed accounting workflow
 > **Lifecycle:** active documentation and publication surface  
 > **Authority:** curated operating guidance, architecture explanations, contract documentation, and documentation-site structure  
 > **Not authoritative for:** ledger records, accounting calculations, source documents, viewer implementation, runtime success, or live publication freshness  
-> **Architecture/operations evidence reviewed:** 2026-08-25 against `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
+> **Architecture/operations/contracts evidence reviewed:** 2026-08-25 against `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
 ## Current system model
 
@@ -48,17 +48,21 @@ The configured URL identifies the intended publication surface. Deployment avail
 
 ## Recommended entrances
 
-For the current architecture and operations authority, start with:
+For the current architecture, operations, and artifact contracts, start with:
 
 1. **Start here** — `/notes/intro`
 2. **Current state** — `/notes/current_state_map`
 3. **Foundations** — `/notes/library/foundations/index`
 4. **Operator start** — `/notes/library/operations/operator-start-here`
 5. **Accounting spine runbook** — `/notes/accounting_spine_runbook`
-6. **Governed-spine truth baseline** — `/notes/library/governance/governed-spine-truth-baseline`
-7. **Documentation refresh program** — `/notes/library/governance/governed-spine-docs-refresh-program`
+6. **Output contracts** — `/notes/output_contracts`
+7. **Artifact ladder** — `/notes/artifact_ladder`
+8. **Metric contract** — `/notes/metric_registry_contract`
+9. **Public bundle contract** — `/notes/frontend_snapshot_contract`
+10. **Governed-spine truth baseline** — `/notes/library/governance/governed-spine-truth-baseline`
+11. **Documentation refresh program** — `/notes/library/governance/governed-spine-docs-refresh-program`
 
-Architecture/foundations and the operator command/runbook surface have been cut over to the governed spine. Artifact contracts, consumer/professional guidance, automation, and historical cleanup remain later bounded waves. Where an older page disagrees, current executable upstream authority controls.
+Architecture/foundations, operator guidance, and artifact/contract authority have been cut over to the governed spine. Consumer/professional semantics, automation/recovery, and historical cleanup remain later bounded waves. Where an older page disagrees, current executable upstream authority controls.
 
 ## Local documentation development
 
@@ -94,4 +98,4 @@ The governed-spine refresh is controlled by root `AGENTS.md` and:
 - `docs/notes/library/90-governance/93-governed-spine-docs-refresh-program.md`
 - `docs/notes/library/90-governance/94-autonomous-doc-pr-protocol.md`
 
-The upstream commit above is the factual baseline for the architecture and operator pages checked in the current refresh waves. Future documentation changes must re-check current `accounting-workflows/main` rather than treating that SHA as permanent truth.
+The upstream commit above is the factual baseline for the current architecture, operator, and contract pages checked in the refresh. Future documentation changes must re-check current `accounting-workflows/main` rather than treating that SHA as permanent truth.
