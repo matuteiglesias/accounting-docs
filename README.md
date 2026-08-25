@@ -3,9 +3,9 @@
 Public operating and contract documentation for the governed accounting workflow estate.
 
 > **Lifecycle:** active documentation and publication surface  
-> **Authority:** curated operating guidance, architecture explanations, contract documentation, and documentation-site structure  
+> **Authority:** curated operating guidance, architecture explanations, contract documentation, consumer guidance, and documentation-site structure  
 > **Not authoritative for:** ledger records, accounting calculations, source documents, viewer implementation, runtime success, or live publication freshness  
-> **Architecture/operations/contracts evidence reviewed:** 2026-08-25 against `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
+> **Architecture/operations/contracts/consumer evidence reviewed:** 2026-08-25 against `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`; viewer boundary checked at `accounting-viewer@9d2dfabe3227195f7910ae362bcaaedd6c509529`
 
 ## Current system model
 
@@ -29,7 +29,7 @@ Generic `accounting.views` / `run-marts`, the parallel `metric_values` engine, a
 
 `matuteiglesias/accounting-workflows` owns canonical transformations, accounting business-rule implementation, governed reporting calculations, professional packs, drilldowns, and publication bundle generation.
 
-`matuteiglesias/accounting-viewer` owns viewer-specific read-only presentation over approved packaged outputs.
+`matuteiglesias/accounting-viewer` owns viewer-specific read-only presentation over approved packaged outputs. Its current packaging still reflects an older unqualified snapshot convention, so viewer availability does not prove that the latest scope-qualified governed bundle is loaded.
 
 This repository, `matuteiglesias/accounting-docs`, owns the published guidance that explains those systems. It does not calculate accounting results and must not invent accounting, legal, ownership, or family-governance meaning.
 
@@ -48,7 +48,7 @@ The configured URL identifies the intended publication surface. Deployment avail
 
 ## Recommended entrances
 
-For the current architecture, operations, and artifact contracts, start with:
+For the current architecture, operations, contracts, and consumer interpretation, start with:
 
 1. **Start here** — `/notes/intro`
 2. **Current state** — `/notes/current_state_map`
@@ -59,10 +59,12 @@ For the current architecture, operations, and artifact contracts, start with:
 7. **Artifact ladder** — `/notes/artifact_ladder`
 8. **Metric contract** — `/notes/metric_registry_contract`
 9. **Public bundle contract** — `/notes/frontend_snapshot_contract`
-10. **Governed-spine truth baseline** — `/notes/library/governance/governed-spine-truth-baseline`
-11. **Documentation refresh program** — `/notes/library/governance/governed-spine-docs-refresh-program`
+10. **Consumer start** — `/notes/library/consumers/consumer-start-here`
+11. **Human report catalog** — `/notes/human_report_catalog`
+12. **Governed-spine truth baseline** — `/notes/library/governance/governed-spine-truth-baseline`
+13. **Documentation refresh program** — `/notes/library/governance/governed-spine-docs-refresh-program`
 
-Architecture/foundations, operator guidance, and artifact/contract authority have been cut over to the governed spine. Consumer/professional semantics, automation/recovery, and historical cleanup remain later bounded waves. Where an older page disagrees, current executable upstream authority controls.
+Architecture/foundations, operator guidance, artifact/contract authority, and consumer/professional semantics have been cut over to the governed spine. Automation/recovery and historical/IA cleanup remain later bounded waves. Where an older page disagrees, current executable upstream authority controls.
 
 ## Local documentation development
 
@@ -98,4 +100,4 @@ The governed-spine refresh is controlled by root `AGENTS.md` and:
 - `docs/notes/library/90-governance/93-governed-spine-docs-refresh-program.md`
 - `docs/notes/library/90-governance/94-autonomous-doc-pr-protocol.md`
 
-The upstream commit above is the factual baseline for the current architecture, operator, and contract pages checked in the refresh. Future documentation changes must re-check current `accounting-workflows/main` rather than treating that SHA as permanent truth.
+The upstream commits above are the factual baseline for the current architecture, operator, contract, and consumer pages checked in the refresh. Future documentation changes must re-check current upstream repositories rather than treating those SHAs as permanent truth.
