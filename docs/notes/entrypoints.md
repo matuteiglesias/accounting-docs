@@ -2,129 +2,135 @@
 title: "Backend Entrypoints"
 sidebar_label: "Entrypoints"
 sidebar_position: 5
-description: "Catalog of commands, scripts, and module entrypoints used to run accounting workflows."
+description: "Catalog of current Make targets and module entrypoints used to operate the governed accounting backend."
 doc_type: "reference"
 ---
 
-
 # Accounting Backend Entrypoints
 
-Status: authority draft
-Last reviewed: 2026-05-10
+Status: current entrypoint reference  
+Last reviewed: 2026-08-25  
+Upstream truth checked: `accounting-workflows@b7d2c3a379f966f4d69b56c2df113714a7051452`
 
 ## Purpose
 
-This document identifies the current operational entrypoints for the accounting backend and distinguishes canonical, support, legacy, and experimental commands.
+Identify which surfaces are current operator entrypoints and which are fixture checks, existing-run operations, compatibility aliases, internal module implementations, or destructive commands.
 
-The Makefile is the command authority. Module CLIs remain useful implementation entrypoints, but users should start with `make help`.
+The Makefile is the command authority. Direct Python module CLIs are implementation surfaces and should normally be reached through a governed Make target.
 
 ## Status vocabulary
 
 | Status | Meaning |
 |---|---|
-| canonical | Preferred current command/module for the pipeline |
-| support | Useful diagnostic, validation, partial, or packaging command |
-| legacy | Historical or compatibility surface; avoid new dependencies |
-| experimental | Future/incomplete surface, not yet a reliable dependency |
+| fixture-safe | Intended to operate without live private ingestion. |
+| live | Reads live configured inputs and/or performs a live orchestration. |
+| existing-run | Operates on a selected run root without forcing live ingest. |
+| publish | Changes or validates the public packaged surface. |
+| compatibility | Retained alias; not a separate architecture or preferred new dependency. |
+| sidecar | Bounded valuation/presentation operation outside the canonical core. |
+| destructive | Deletes generated state; explicit authorization required. |
 
-## Canonical Make targets
+## Fixture-safe Make targets
 
-| Target | Layer | Expands to / purpose |
+| Target | Status | Purpose |
 |---|---|---|
-| `make ledger` | Level 1 | Build the live canonical ledger via `run-ingest`. |
-| `make materialize` | Level 2 | Build live materialized Stage D artifacts via `run-materialize`. |
-| `make debt` | Level 3 | Resolve live internal debt artifacts via `run-debt`. |
-| `make debt-views` | Level 3 | Build debt balance views via `run-debt-views`. |
-| `make metrics` | Level 3 | Build metric values, registry, validation, views, and drilldowns via `run-metrics`. |
-| `make human-report` | Level 4 | Build the current human balance report via `run-human-report`. |
-| `make publish-latest` | Level 5 | Publish latest producer artifacts to `public/accounting/latest/*`. |
-| `make publish` | Level 5 | Compatibility alias for `publish-latest`. |
-| `make build-all` | composite | Run the full canonical build through publish. |
-| `make build-report` | composite | Run through the current human report without publishing. |
-| `make build-front` | composite | Publish the latest report/metrics/debt snapshot for frontend consumption. |
+| `make help` | fixture-safe | Discover the current Makefile surface. |
+| `make doctor` | fixture-safe | Python version + compile checks. |
+| `make validate` | fixture-safe | Compile + contract + regression validation. |
+| `make smoke-core` | fixture-safe | Fixture ingest and governed semantic/cash materialization. |
+| `make smoke-full` | fixture-safe / partial | Fixture core + validation + publication dry-run. |
 
-## Support Make targets
+`smoke-full` is not a fixture equivalent of the full live debt/publication path.
 
-| Target | Purpose |
-|---|---|
-| `make doctor` | Compile-check key command modules and print Python version. |
-| `make smoke` / `make smoke-accounting` | Run the fixture/offline smoke path through views. |
-| `make validate` | Run lightweight command-surface checks. |
-| `make clean-derived` | Remove derived accounting outputs under `out/` and `public/accounting/latest`. |
-| `make run-downstream-from-ledger` | Reuse an existing canonical ledger and rebuild downstream artifacts. |
-| `make run-metrics-and-human` | Reuse existing views and rebuild debt, metrics, and human report. |
-| `make run-human-balance-only` | Reuse existing metrics and rebuild only the current human report. |
+## Current live / stage Make targets
 
-## Experimental Make targets
+| Target | Status | Purpose |
+|---|---|---|
+| `make run-ingest` | live stage | Live source -> canonical ledger. |
+| `make run-materialize` | live stage | Live ingest dependency + governed materialization. |
+| `make run-canonical` | live | Live ingest + governed materialization. |
+| `make run-debt` | live stage | Live canonical dependency + debt resolution. |
+| `make run-debt-views` | live | Debt resolution + position/activity + treasury, with live upstream dependency. |
+| `make run-metrics-live` | live | Live debt upstream + governed metrics + latest-pointer update. |
+| `make run-full` | live + publish | Full live orchestration through publication and release check. |
 
-| Target | Purpose |
-|---|---|
-| `make front-report` | Build the future/front-oriented human report using `accounting.human.front`. This remains experimental. |
+The command name `run-debt-views` is historical naming; its current output authority is debt position/activity plus treasury. It does not resurrect a generic views stage.
 
-## Legacy aliases and compatibility targets
+## Existing-run Make targets
 
-The older `run-*` targets remain available as compatibility aliases and implementation targets. They should be considered lower-level than the canonical target names above.
+| Target | Status | Purpose |
+|---|---|---|
+| `make metrics-from-run` | existing-run | Governed metrics from the selected `RUN_OUT`. |
+| `make run-metrics` | existing-run | Current stage alias to `metrics-from-run`. |
+| `make run-dashboard` | existing-run | Build/check metrics and assert annual dashboard outputs. |
+| `make run-downstream-from-ledger` | existing-run / consequential | Rebuild materialization, debt, metrics, and latest pointers from an exact ledger run. |
 
-| Existing target | Current classification |
-|---|---|
-| `run-ingest` | compatibility implementation for `ledger` |
-| `run-materialize` | compatibility implementation for `materialize` |
-| `run-views` | support bridge for Stage D view composition |
-| `run-debt` | compatibility implementation for `debt` |
-| `run-debt-views` | compatibility implementation for `debt-views` |
-| `run-debt-balance` | legacy compatibility alias for `run-debt-views` |
-| `run-metrics` | compatibility implementation for `metrics` |
-| `run-human-report` | compatibility implementation for `human-report` |
-| `run-human-balance` | legacy compatibility alias for `run-human-report` |
-| `run-accounting` / `run-accounting-full` | compatibility implementation for `build-report` |
-| `run` / `run-all` | legacy convenience aliases for `run-accounting` |
+Pin `RUN_STAMP` and preserve the original `BOXES`/scope for existing-run operations.
 
-## Canonical module CLIs
+## Publication targets
 
-| Module command | Layer | Status | Notes |
-|---|---|---|---|
-| `python -m accounting.ledger.ingest ...` | Level 1 | canonical implementation | Builds canonical ledger from fixture or Google Sheet. |
-| `python -m accounting.stage_d.materialize ...` | Level 2 | canonical implementation | Materializes the canonical ledger into Stage D CSV artifacts. |
-| `python -m accounting.views ...` | Level 2/3 | support | Builds view tables from Stage D artifacts. |
-| `python -m accounting.debt.resolve ...` | Level 3 | canonical implementation | Current debt resolver. |
-| `python -m accounting.debt.balance_views ...` | Level 3 | canonical implementation | Builds debt balance view CSVs. |
-| `python -m accounting.metrics.build ...` | Level 3 | canonical implementation | Main metric artifact builder. |
-| `python -m accounting.human.document ...` | Level 4 | current canonical implementation | Current human report factory. |
-| `python -m accounting.publish.latest ...` | Level 5 | current canonical publish implementation | Builds frontend-safe latest snapshot. |
-| `python -m accounting.human.front ...` | Level 4/5 | experimental | Future/front-oriented report factory. |
+| Target | Status | Purpose |
+|---|---|---|
+| `make publish-latest` | publish | Package selected latest artifacts into the scoped public bundle. |
+| `DRY_RUN=1 make publish-latest` | fixture-safe packaging check | Exercise publication logic without writing the live public bundle. |
+| `make release-check` | publish validation | Check release readiness of `public/accounting/latest_<SCOPE_TAG>`. |
 
-## Removed compatibility module paths
+Packaging success and release readiness are separate claims.
 
-The flat compatibility shim modules were removed after import, Makefile, and docs checks showed no active internal dependency. Use the canonical package paths in the table above instead.
+## Compatibility aliases
 
-| Removed path | Replacement |
-|---|---|
-| `python -m accounting.ingest ...` | `python -m accounting.ledger.ingest ...` |
-| `python -m accounting.materialize ...` | `python -m accounting.stage_d.materialize ...` |
-| `python -m accounting.resolve_internal_debt_v2 ...` | `python -m accounting.debt.resolve ...` |
-| `python -m accounting.build_debt_balance_views ...` | `python -m accounting.debt.balance_views ...` |
-| `python -m accounting.build_metric_values ...` | `python -m accounting.metrics.build ...` |
-| `python -m accounting.human_balance_document_factory ...` | `python -m accounting.human.document ...` |
-| `python -m accounting.human_balance_front_factory ...` | `python -m accounting.human.front ...` |
-| `python -m accounting.publish_latest ...` | `python -m accounting.publish.latest ...` |
-
-
-## Operational rule
-
-A future user should normally run:
+The current Makefile deliberately keeps aliases such as:
 
 ```text
-make build-all
+ledger
+materialize
+debt
+debt-views
+metrics
+publish
+build-all
+run-accounting
+run-accounting-full
+run-debt-balance
+run
+run-all
 ```
 
-For partial rebuilds, use the named layer targets in order:
+These map to current explicit targets. They are compatibility surfaces, not the preferred vocabulary for new operating docs.
 
-```text
-make ledger
-make materialize
-make debt
-make debt-views
-make metrics
-make human-report
-make publish-latest
-```
+## Sidecar Make targets
+
+The Makefile also exposes bounded USD-CCL valuation/management flows and professional drilldown/digest targets. Use the Make targets rather than directly reconstructing their Python arguments unless debugging the implementation.
+
+## Current module implementations
+
+Important module CLIs invoked by the Makefile include:
+
+| Module | Role |
+|---|---|
+| `python -m accounting.ledger.ingest` | canonical ledger ingest |
+| `python -m accounting.stage_d.materialize` | governed materialization |
+| `python -m accounting.debt.resolve` | debt resolution |
+| `python -m accounting.debt.balance_views` | debt balance compatibility shapes consumed by governed debt marts |
+| `python -m accounting.marts.debt` | governed debt position/activity materialization |
+| `python -m accounting.marts.treasury` | governed treasury/accountability materialization |
+| `python -m accounting.metrics.build` | governed metric frontier + annual artifacts |
+| `python -m accounting.publish.latest` | publication packaging |
+| `python -m accounting.professional.drilldown` | professional drilldown generation |
+| `python -m accounting.professional.render_linked_digest` | linked presentation digest |
+
+Direct module invocation can bypass Makefile prerequisites and scope/run wiring. Prefer Make targets for normal operation.
+
+## Retired operational surfaces
+
+Do not use old documentation to reintroduce:
+
+- `accounting.views` / `run-views` as a current pipeline layer;
+- legacy `metric_values`/registry/views as the primary metric engine;
+- `accounting.human.*` / `run-human-report` as current accounting authority.
+
+If a historical page or compatibility module still mentions one of these, classify the reference before relying on it.
+
+## Destructive entrypoint
+
+`make clean-derived` removes generated run, metrics, debt, smoke, and public latest paths. It is never part of routine validation or first-response diagnosis.
